@@ -142,7 +142,7 @@ void MainApplication::shootBox(const btVector3& position, const btQuaternion& or
     Ogre::SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
     node->attachObject(cube);
     // Scale it to appropriate size
-    node->scale(0.02, 0.02, 0.02);
+    node->scale(0.02f, 0.02f, 0.02f);
 
     // Create a collision shape
     // Note that the size should match the size of the object that will be displayed
