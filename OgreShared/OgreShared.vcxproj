@@ -70,7 +70,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <Text Include="ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

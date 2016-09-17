@@ -1,0 +1,2 @@
+# OgreShared
+This is a static library project that is shared across projects in OgrePlayground. Common classes/functions used in more than one project should be placed here for reusability purposes. The other projects will reference this project in the project configuration settings.

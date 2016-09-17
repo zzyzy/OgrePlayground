@@ -16,12 +16,27 @@
     <Filter Include="Configuration Files">
       <UniqueIdentifier>{6b57f065-763a-46e9-9795-1bec3b0e4d2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene Definition Files">
+      <UniqueIdentifier>{e7ceaac1-f84d-4839-a052-618e9d520173}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OgreContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,5 +47,37 @@
     <ClCompile Include="Program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SceneBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OgreContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApplication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ogre.cfg">
+      <Filter>Configuration Files</Filter>
+    </None>
+    <None Include="plugins.cfg">
+      <Filter>Configuration Files</Filter>
+    </None>
+    <None Include="plugins_d.cfg">
+      <Filter>Configuration Files</Filter>
+    </None>
+    <None Include="resources.cfg">
+      <Filter>Configuration Files</Filter>
+    </None>
+    <None Include="resources_d.cfg">
+      <Filter>Configuration Files</Filter>
+    </None>
+    <None Include="Scene1.sd">
+      <Filter>Scene Definition Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
