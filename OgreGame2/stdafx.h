@@ -22,10 +22,14 @@
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
+#include <OgreMeshManager.h>
 
 #include <OISEvents.h>
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-#include <SdkTrays.h>
+// #include <SdkTrays.h>
+
+// Bullet
+#include <btBulletDynamicsCommon.h>

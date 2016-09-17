@@ -16,6 +16,7 @@
 #define __MAINAPPLICATION_HPP__
 
 #include "OgreContext.hpp"
+#include "BulletContext.hpp"
 #include "FPSController.hpp"
 
 class MainApplication : public OgreContext
@@ -39,7 +40,11 @@ private:
 
     void setupScene(Ogre::SceneManager* const sceneMgr) override;
 
+    void shootBox(const btVector3& position, const btQuaternion& orientation, const btVector3& linearVelocity);
+
+    BulletContext mBulletContext;
     FPSController mFPSController;
+    int mBoxCount;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__
