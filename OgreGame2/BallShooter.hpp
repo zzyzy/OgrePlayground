@@ -23,8 +23,18 @@ public:
 		mCharging(false),
 		mChargeTime(0),
 		mElapsedDelay(3.0f),
-		mBoxCount(0)
+		mBoxCount(0),
+		mPoolSize(5)
 	{
+	}
+
+	~BallShooter()
+	{
+		for (auto it = mBallPool.begin(); it != mBallPool.end(); ++it)
+		{
+			it->second.killMyself(mSceneMgr, mBulletContext);
+		}
+		mBallPool.clear();
 	}
 
 	WeaponState* handleInput(Weapon& weapon, const Input& input) override
@@ -67,6 +77,20 @@ public:
 		if (mElapsedDelay < 2)
 		{
 			mElapsedDelay += deltaTime;
+		}
+
+		for (auto it = mBallPool.begin(); it != mBallPool.end();)
+		{
+			it->second.update(deltaTime);
+			if (it->second.canKillself())
+			{
+				it->second.killMyself(mSceneMgr, mBulletContext);
+				it = mBallPool.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
 	}
 
@@ -123,13 +147,76 @@ public:
 
 		// Give the rigid body an initial velocity
 		rigidBody->setLinearVelocity(linearVelocity);
+
+		Projectile projectile(5.0f, rigidBody);
+		mBallPool.insert(std::make_pair(entityName, projectile));
 	}
 
 private:
+	class Projectile
+	{
+	public:
+		explicit Projectile(const float& timeToLive, btRigidBody* body) :
+			mTimeToLive(timeToLive),
+			mLivingTime(0.0f),
+			mBody(body)
+		{
+		}
+
+		~Projectile()
+		{
+		}
+
+		void update(const float& deltaTime)
+		{
+			if (mLivingTime < mTimeToLive)
+			{
+				mLivingTime += deltaTime;
+			}
+		}
+
+		bool canKillself() const
+		{
+			if (mLivingTime >= mTimeToLive)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		void killMyself(Ogre::SceneManager* sceneMgr, BulletContext* bulletContext) const
+		{
+			// Get the scene node from the motion state of the rigidbody
+			Ogre::SceneNode* node = static_cast<BulletContext::OgreMotionState*>(mBody->getMotionState())->GetNode();
+
+			// Get the entity from the node 
+			// Assumes that you only have one entity, if you have more just loop through to get them all in order to delete them
+			Ogre::Entity* entity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
+
+			// Detach the entity from the scene node
+			node->detachObject(entity);
+
+			// Delete the entity and the scene node
+			sceneMgr->destroyEntity(entity);
+			sceneMgr->destroySceneNode(node);
+
+			// Destroy the rigidbody from the physics system
+			bulletContext->DestroyRigidBody(mBody);
+		}
+
+	private:
+		float mTimeToLive;
+		float mLivingTime;
+		btRigidBody* mBody;
+	};
+
 	bool mCharging;
 	float mChargeTime;
 	float mElapsedDelay;
 	int mBoxCount;
+	int mPoolSize;
+	std::map<std::string, Projectile> mBallPool;
 };
 
 #endif // #ifndef __BALLSHOOTER_HPP__
