@@ -29,7 +29,7 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-// #include <SdkTrays.h>
+#include <SdkTrays.h>
 
 // Bullet
 #include <btBulletDynamicsCommon.h>

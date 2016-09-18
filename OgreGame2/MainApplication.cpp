@@ -55,12 +55,14 @@ bool MainApplication::keyReleased(const OIS::KeyEvent& ke)
 
 bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 {
+	if (!OgreContext::mouseMoved(me)) return false;
 	if (!mFPSController.CaptureMouseMoved(me)) return false;
 	return true;
 }
 
 bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
+	if (!OgreContext::mousePressed(me, id)) return false;
 	if (!mFPSController.CaptureMousePressed(me, id)) return false;
 
 	if (id == OIS::MB_Left)
@@ -73,6 +75,7 @@ bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID
 
 bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
+	if (!OgreContext::mouseReleased(me, id)) return false;
 	if (!mFPSController.CaptureMouseReleased(me, id)) return false;
 
 	if (id == OIS::MB_Left)

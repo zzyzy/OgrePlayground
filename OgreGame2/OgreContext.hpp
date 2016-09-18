@@ -42,7 +42,8 @@ class OgreContext :
     public Ogre::WindowEventListener,
     public Ogre::FrameListener,
     public OIS::KeyListener,
-    public OIS::MouseListener
+    public OIS::MouseListener,
+	public OgreBites::SdkTrayListener
 {
 public:
     OgreContext();
@@ -52,11 +53,16 @@ public:
 
 protected:
     // WindowEventListener overrides
-    void windowResized(Ogre::RenderWindow* rw) override;
-    void windowClosed(Ogre::RenderWindow* rw) override;
+    void windowResized(Ogre::RenderWindow* rw) final override;
+    void windowClosed(Ogre::RenderWindow* rw) final override;
 
     // FrameListener overrides
     bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
+
+	// MouseListener overrides
+	bool mouseMoved(const OIS::MouseEvent& me) override;
+	bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
+	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 
     // Allow application specific overrides
     virtual void setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) const;
@@ -70,11 +76,16 @@ protected:
     Ogre::RenderWindow* mWindow;
     Ogre::SceneManager* mSceneMgr;
     Ogre::Camera* mCamera;
+	Ogre::OverlaySystem* mOverlaySystem;
 
     // OIS
     OIS::InputManager* mInputMgr;
     OIS::Keyboard* mKeyboard;
     OIS::Mouse* mMouse;
+
+	// OgreBites
+	OgreBites::InputContext mInputContext;
+	OgreBites::SdkTrayManager* mTrayMgr;
 };
 
 #endif // #ifndef __OGRECONTEXT_HPP__

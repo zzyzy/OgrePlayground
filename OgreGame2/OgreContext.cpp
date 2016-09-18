@@ -15,18 +15,21 @@ OgreContext::OgreContext() :
     mWindow(nullptr),
     mSceneMgr(nullptr),
     mCamera(nullptr),
+	mOverlaySystem(nullptr),
     mInputMgr(nullptr),
     mKeyboard(nullptr),
-    mMouse(nullptr)
+    mMouse(nullptr),
+	mTrayMgr(nullptr)
 {
 }
 
 OgreContext::~OgreContext()
 {
+	if (mTrayMgr) delete mTrayMgr;
+	if (mOverlaySystem) delete mOverlaySystem;
+
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
-
     WindowEventListener::windowClosed(mWindow);
-
     delete mRoot;
 }
 
@@ -69,10 +72,13 @@ bool OgreContext::Setup()
 
     mWindow = mRoot->initialise(true, "TutorialApplication Render Window");
 
+	mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+
+	mOverlaySystem = new Ogre::OverlaySystem();
+	mSceneMgr->addRenderQueueListener(mOverlaySystem);
+
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-    mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
 
     //mCamera = mSceneMgr->createCamera("MainCam");
     //mCamera->setPosition(0, 0, 80);
@@ -122,6 +128,13 @@ bool OgreContext::Setup()
     windowResized(mWindow);
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
 
+	mInputContext.mKeyboard = mKeyboard;
+	mInputContext.mMouse = mMouse;
+	mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mInputContext, this);
+	mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+	mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
+	mTrayMgr->hideCursor();
+
     mRoot->addFrameListener(this);
     mMouse->setEventCallback(this);
     mKeyboard->setEventCallback(this);
@@ -167,7 +180,27 @@ bool OgreContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     if (mKeyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
 
+	mTrayMgr->frameRenderingQueued(evt);
+
     return true;
+}
+
+bool OgreContext::mouseMoved(const OIS::MouseEvent& me)
+{
+	//if (!mTrayMgr->injectMouseMove(me)) return false;
+	return true;
+}
+
+bool OgreContext::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
+{
+	//if (!mTrayMgr->injectMouseDown(me, id)) return false;
+	return true;
+}
+
+bool OgreContext::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
+{
+	//if (!mTrayMgr->injectMouseUp(me, id)) return false;
+	return true;
 }
 
 void OgreContext::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) const
