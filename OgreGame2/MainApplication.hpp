@@ -18,33 +18,32 @@
 #include "OgreContext.hpp"
 #include "BulletContext.hpp"
 #include "FPSController.hpp"
+#include "Weapon.hpp"
 
 class MainApplication : public OgreContext
 {
 public:
-    MainApplication();
-    ~MainApplication();
+	MainApplication();
+	~MainApplication();
 
 private:
-    // FrameListener overrides
-    bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
+	// FrameListener overrides
+	bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
 
-    // KeyListener overrides
-    bool keyPressed(const OIS::KeyEvent& ke) override;
-    bool keyReleased(const OIS::KeyEvent& ke) override;
+	// KeyListener overrides
+	bool keyPressed(const OIS::KeyEvent& ke) override;
+	bool keyReleased(const OIS::KeyEvent& ke) override;
 
-    // MouseListener overrides
-    bool mouseMoved(const OIS::MouseEvent& me) override;
-    bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
-    bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
+	// MouseListener overrides
+	bool mouseMoved(const OIS::MouseEvent& me) override;
+	bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
+	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 
-    void setupScene(Ogre::SceneManager* const sceneMgr) override;
+	void setupScene(Ogre::SceneManager* const sceneMgr) override;
 
-    void shootBox(const btVector3& position, const btQuaternion& orientation, const btVector3& linearVelocity);
-
-    BulletContext mBulletContext;
-    FPSController mFPSController;
-    int mBoxCount;
+	BulletContext mBulletContext;
+	FPSController mFPSController;
+	Weapon mWeapon;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__
