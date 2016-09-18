@@ -33,7 +33,7 @@ public:
 	                     const float& impactForce = 50.0f) :
 		WeaponState(sceneMgr, camera, bulletContext),
 		mDelayBetweenShots(delayBetweenShots),
-		mElapsedDelay(0.0f),
+		mElapsedDelay(mDelayBetweenShots),
 		mImpactForce(impactForce),
 		mZoomLevel(ZoomLevel::NONE),
 		mScopeOverlay(scopeOverlay),
