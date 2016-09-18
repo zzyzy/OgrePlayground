@@ -9,6 +9,7 @@
 #include "MainApplication.hpp"
 #include "BallShooter.hpp"
 #include "HandGun.hpp"
+#include "SniperRifle.hpp"
 
 MainApplication::MainApplication()
 {
@@ -40,6 +41,9 @@ bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 	case OIS::KC_2:
 		mWeapon.SetState(new HandGun(mSceneMgr, mCamera, &mBulletContext));
 		break;
+	case OIS::KC_5:
+		mWeapon.SetState(new SniperRifle(mSceneMgr, mCamera, &mBulletContext, mSniperScopeOverlay));
+		break;
 	default:
 		break;
 	}
@@ -68,6 +72,9 @@ bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID
 	if (id == OIS::MB_Left)
 	{
 		mWeapon.handleInput(WeaponState::Input::MOUSEDOWN);
+	} else if (id == OIS::MB_Right)
+	{
+		mWeapon.handleInput(WeaponState::Input::RIGHTMOUSEDOWN);
 	}
 
 	return true;
@@ -138,4 +145,62 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 	mFPSController.Attach(cameraNode, fpsPlayer);
 
 	mWeapon.SetState(new BallShooter(mSceneMgr, mCamera, &mBulletContext));
+
+	// Create a manual object for 2D
+	Ogre::ManualObject* manual = mSceneMgr->createManualObject("manual");
+
+	// Use identity view/projection matrices
+	manual->setUseIdentityProjection(true);
+	manual->setUseIdentityView(true);
+
+	manual->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_LIST);
+
+	manual->position(-0.05, 0.0, 0.0);
+	manual->position(0.05, 0.0, 0.0);
+	manual->position(0.0, -0.05, 0.0);
+	manual->position(0.0, 0.05, 0.0);
+
+	manual->end();
+
+	// Use infinite AAB to always stay visible
+	Ogre::AxisAlignedBox aabInf;
+	aabInf.setInfinite();
+	manual->setBoundingBox(aabInf);
+
+	// Render just before overlays
+	manual->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY - 1);
+
+	// Attach to scene
+	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(manual);
+
+	// Get the pointer to the overlay manager
+	Ogre::OverlayManager* overlayManager = Ogre::OverlayManager::getSingletonPtr();
+
+	// Create an overlay
+	mSniperScopeOverlay = overlayManager->create("Overlay");
+	
+	// Load an image into Ogre's texture manager
+	Ogre::Image image;
+	image.load("sniper-scope-cropped.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	Ogre::TextureManager::getSingleton().loadImage("LogoTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, image, Ogre::TEX_TYPE_2D, 0, 1.0f);
+
+	// Already loaded to texture, no longer need image
+	image.freeMemory();
+
+	// Create a material and assign the texture to the material
+	Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().create("ImageMaterial", "General");
+	materialPtr->getTechnique(0)->getPass(0)->createTextureUnitState("LogoTexture");
+	materialPtr->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SceneBlendType::SBT_TRANSPARENT_ALPHA);
+
+	// Create a container and set it to the material we just defined
+	Ogre::OverlayContainer* imageContainer = static_cast<Ogre::OverlayContainer*>(overlayManager->createOverlayElement("Panel", "DisplayImage1"));
+	imageContainer->setMaterialName("ImageMaterial");
+	imageContainer->setMetricsMode(Ogre::GMM_RELATIVE);
+	imageContainer->setDimensions(1, 1);
+	imageContainer->setPosition(0, 0);
+
+	// Add the container to the overlay
+	mSniperScopeOverlay->add2D(imageContainer);
+	// Display the overlay
+	//overlay->show();
 }

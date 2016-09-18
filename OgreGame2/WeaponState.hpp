@@ -30,7 +30,8 @@ public:
 	enum class Input
 	{
 		MOUSEDOWN,
-		MOUSEUP
+		MOUSEUP,
+		RIGHTMOUSEDOWN
 	};
 
 	WeaponState() :

@@ -44,6 +44,7 @@ private:
 	BulletContext mBulletContext;
 	FPSController mFPSController;
 	Weapon mWeapon;
+	Ogre::Overlay* mSniperScopeOverlay;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

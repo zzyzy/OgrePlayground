@@ -60,6 +60,9 @@
     <ClInclude Include="HandGun.hpp">
       <Filter>Header Files\Weapon States</Filter>
     </ClInclude>
+    <ClInclude Include="SniperRifle.hpp">
+      <Filter>Header Files\Weapon States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
