@@ -80,29 +80,6 @@ bool OgreContext::Setup()
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-    //mCamera = mSceneMgr->createCamera("MainCam");
-    //mCamera->setPosition(0, 0, 80);
-    //mCamera->lookAt(0, 0, -300);
-    //mCamera->setNearClipDistance(5);
-
-    //Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-    //vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
-
-    //mCamera->setAspectRatio(
-    //    Ogre::Real(vp->getActualWidth()) /
-    //    Ogre::Real(vp->getActualHeight()));
-
-    //// Create Scene
-    //Ogre::Entity* ogreEntity = mSceneMgr->createEntity("ogrehead.mesh");
-
-    //Ogre::SceneNode* ogreNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    //ogreNode->attachObject(ogreEntity);
-
-    //mSceneMgr->setAmbientLight(Ogre::ColourValue(.5, .5, .5));
-
-    //Ogre::Light* light = mSceneMgr->createLight("MainLight");
-    //light->setPosition(20, 80, 50);
-
     setupCamera(mSceneMgr, mCamera);
     setupViewport(mWindow, mCamera);
     setupScene(mSceneMgr);
