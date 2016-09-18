@@ -182,10 +182,8 @@ bool OgreContext::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id
 
 void OgreContext::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) const
 {
-    camera = sceneMgr->createCamera("MainCam");
-    camera->setPosition(0, 50, 80);
-    camera->lookAt(0, 0, -300);
-    camera->setNearClipDistance(5);
+    camera = sceneMgr->createCamera("MainCamera");
+    camera->setNearClipDistance(0.1f);
 }
 
 void OgreContext::setupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const
