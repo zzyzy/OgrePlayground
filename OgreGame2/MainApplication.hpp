@@ -45,6 +45,7 @@ private:
 	FPSController mFPSController;
 	Weapon mWeapon;
 	Ogre::Overlay* mSniperScopeOverlay;
+	Ogre::Overlay* mBinocularOverlay;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

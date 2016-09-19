@@ -12,6 +12,7 @@
 #include "SniperRifle.hpp"
 #include "MachineGun.hpp"
 #include "ShotGun.hpp"
+#include "Binoculars.hpp"
 
 MainApplication::MainApplication() :
 	mSniperScopeOverlay(nullptr)
@@ -52,6 +53,9 @@ bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 		break;
 	case OIS::KC_5:
 		mWeapon.SetState(new SniperRifle(mSceneMgr, mCamera, &mBulletContext, mSniperScopeOverlay));
+		break;
+	case OIS::KC_6:
+		mWeapon.SetState(new Binoculars(mSceneMgr, mCamera, &mBulletContext, mBinocularOverlay));
 		break;
 	default:
 		break;
@@ -331,31 +335,62 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 	{
 		// Get the pointer to the overlay manager
 		Ogre::OverlayManager* overlayManager = Ogre::OverlayManager::getSingletonPtr();
+		
+		// Load sniper scope image and create overlay
+		{
+			// Create an overlay
+			mSniperScopeOverlay = overlayManager->create("SniperScopeOverlay");
 
-		// Create an overlay
-		mSniperScopeOverlay = overlayManager->create("Overlay");
+			// Load an image into Ogre's texture manager
+			Ogre::Image image;
+			image.load("sniper-scope-cropped.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			Ogre::TextureManager::getSingleton().loadImage("LogoTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, image, Ogre::TEX_TYPE_2D, 0, 1.0f);
 
-		// Load an image into Ogre's texture manager
-		Ogre::Image image;
-		image.load("sniper-scope-cropped.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-		Ogre::TextureManager::getSingleton().loadImage("LogoTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, image, Ogre::TEX_TYPE_2D, 0, 1.0f);
+			// Already loaded to texture, no longer need image
+			image.freeMemory();
 
-		// Already loaded to texture, no longer need image
-		image.freeMemory();
+			// Create a material and assign the texture to the material
+			Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().create("ImageMaterial", "General");
+			materialPtr->getTechnique(0)->getPass(0)->createTextureUnitState("LogoTexture");
+			materialPtr->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SceneBlendType::SBT_TRANSPARENT_ALPHA);
 
-		// Create a material and assign the texture to the material
-		Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().create("ImageMaterial", "General");
-		materialPtr->getTechnique(0)->getPass(0)->createTextureUnitState("LogoTexture");
-		materialPtr->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SceneBlendType::SBT_TRANSPARENT_ALPHA);
+			// Create a container and set it to the material we just defined
+			Ogre::OverlayContainer* imageContainer = static_cast<Ogre::OverlayContainer*>(overlayManager->createOverlayElement("Panel", "DisplayImage1"));
+			imageContainer->setMaterialName("ImageMaterial");
+			imageContainer->setMetricsMode(Ogre::GMM_RELATIVE);
+			imageContainer->setDimensions(1, 1);
+			imageContainer->setPosition(0, 0);
 
-		// Create a container and set it to the material we just defined
-		Ogre::OverlayContainer* imageContainer = static_cast<Ogre::OverlayContainer*>(overlayManager->createOverlayElement("Panel", "DisplayImage1"));
-		imageContainer->setMaterialName("ImageMaterial");
-		imageContainer->setMetricsMode(Ogre::GMM_RELATIVE);
-		imageContainer->setDimensions(1, 1);
-		imageContainer->setPosition(0, 0);
+			// Add the container to the overlay
+			mSniperScopeOverlay->add2D(imageContainer);
+		}
 
-		// Add the container to the overlay
-		mSniperScopeOverlay->add2D(imageContainer);
+		{
+			// Create an overlay
+			mBinocularOverlay = overlayManager->create("BinocularOverlay");
+
+			// Load an image into Ogre's texture manager
+			Ogre::Image image;
+			image.load("binocular.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			Ogre::TextureManager::getSingleton().loadImage("BinocularTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, image, Ogre::TEX_TYPE_2D, 0, 1.0f);
+
+			// Already loaded to texture, no longer need image
+			image.freeMemory();
+
+			// Create a material and assign the texture to the material
+			Ogre::MaterialPtr materialPtr = Ogre::MaterialManager::getSingleton().create("BinocularMaterial", "General");
+			materialPtr->getTechnique(0)->getPass(0)->createTextureUnitState("BinocularTexture");
+			materialPtr->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SceneBlendType::SBT_TRANSPARENT_ALPHA);
+
+			// Create a container and set it to the material we just defined
+			Ogre::OverlayContainer* imageContainer = static_cast<Ogre::OverlayContainer*>(overlayManager->createOverlayElement("Panel", "BinocularImage"));
+			imageContainer->setMaterialName("BinocularMaterial");
+			imageContainer->setMetricsMode(Ogre::GMM_RELATIVE);
+			imageContainer->setDimensions(1, 1);
+			imageContainer->setPosition(0, 0);
+
+			// Add the container to the overlay
+			mBinocularOverlay->add2D(imageContainer);
+		}
 	}
 }
