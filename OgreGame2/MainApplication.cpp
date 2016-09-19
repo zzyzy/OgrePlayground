@@ -85,10 +85,10 @@ bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 		mWeapon.SetState(new ShotGun(mSceneMgr, mCamera, &mBulletContext));
 		break;
 	case OIS::KC_5:
-		mWeapon.SetState(new SniperRifle(mSceneMgr, mCamera, &mBulletContext, mSniperScopeOverlay));
+		mWeapon.SetState(new SniperRifle(mSceneMgr, mCamera, &mBulletContext, mSniperScopeOverlay, mDefaultFOV));
 		break;
 	case OIS::KC_6:
-		mWeapon.SetState(new Binoculars(mSceneMgr, mCamera, &mBulletContext, mBinocularOverlay));
+		mWeapon.SetState(new Binoculars(mSceneMgr, mCamera, &mBulletContext, mBinocularOverlay, mDefaultFOV));
 		break;
 	default:
 		break;
@@ -341,6 +341,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 		cameraNode->setPosition(0.0f, 10.0f, 0.0f);
 		mFPSController.Attach(cameraNode, fpsPlayer);
 		mWeapon.SetState(new BallShooter(mSceneMgr, mCamera, &mBulletContext));
+		mDefaultFOV = mCamera->getFOVy();
 	}
 
 	// Draw crosshair

@@ -26,13 +26,14 @@ public:
 	};
 
 	explicit Binoculars(Ogre::SceneManager* sceneMgr,
-						 Ogre::Camera* camera,
-						 BulletContext* bulletContext,
-						 Ogre::Overlay* scopeOverlay) :
+	                    Ogre::Camera* camera,
+	                    BulletContext* bulletContext,
+	                    Ogre::Overlay* scopeOverlay,
+	                    Ogre::Radian defaultFOV) :
 		WeaponState(sceneMgr, camera, bulletContext),
 		mZoomLevel(ZoomLevel::NONE),
 		mZoomOverlay(scopeOverlay),
-		mDefaultFOV(mCamera->getFOVy())
+		mDefaultFOV(defaultFOV)
 	{
 	}
 

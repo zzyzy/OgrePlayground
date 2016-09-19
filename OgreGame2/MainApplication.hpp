@@ -49,6 +49,7 @@ private:
 	Ogre::Overlay* mBinocularOverlay;
 	OgreBites::ParamsPanel* mWeaponPanel;
 	OgreBites::ProgressBar* mChargeBar;
+	Ogre::Radian mDefaultFOV;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

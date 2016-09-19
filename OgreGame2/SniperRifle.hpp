@@ -28,7 +28,8 @@ public:
 	explicit SniperRifle(Ogre::SceneManager* sceneMgr,
 	                     Ogre::Camera* camera,
 	                     BulletContext* bulletContext,
-						 Ogre::Overlay* scopeOverlay,
+	                     Ogre::Overlay* scopeOverlay,
+	                     Ogre::Radian defaultFOV,
 	                     const float& delayBetweenShots = 3.0f,
 	                     const float& impactForce = 50.0f) :
 		WeaponState(sceneMgr, camera, bulletContext),
@@ -37,9 +38,8 @@ public:
 		mImpactForce(impactForce),
 		mZoomLevel(ZoomLevel::NONE),
 		mScopeOverlay(scopeOverlay),
-		mDefaultFOV()
+		mDefaultFOV(defaultFOV)
 	{
-		mDefaultFOV = mCamera->getFOVy();
 	}
 
 	~SniperRifle()
@@ -101,12 +101,13 @@ public:
 			mZoomLevel = ZoomLevel::LEVEL1;
 			mScopeOverlay->show();
 			mCamera->setFOVy(Ogre::Degree(30.0f));
-		} 
+		}
 		else if (mZoomLevel == ZoomLevel::LEVEL1)
 		{
 			mZoomLevel = ZoomLevel::LEVEL2;
 			mCamera->setFOVy(Ogre::Degree(20.0f));
-		} else if (mZoomLevel == ZoomLevel::LEVEL2)
+		}
+		else if (mZoomLevel == ZoomLevel::LEVEL2)
 		{
 			mZoomLevel = ZoomLevel::NONE;
 			mScopeOverlay->hide();
@@ -125,7 +126,8 @@ public:
 		if (mZoomLevel == ZoomLevel::NONE)
 		{
 			return 0;
-		} else if (mZoomLevel == ZoomLevel::LEVEL1)
+		}
+		else if (mZoomLevel == ZoomLevel::LEVEL1)
 		{
 			return 1;
 		}
