@@ -10,6 +10,7 @@
 #include "BallShooter.hpp"
 #include "HandGun.hpp"
 #include "SniperRifle.hpp"
+#include "MachineGun.hpp"
 
 MainApplication::MainApplication() :
 	mSniperScopeOverlay(nullptr)
@@ -41,6 +42,9 @@ bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 		break;
 	case OIS::KC_2:
 		mWeapon.SetState(new HandGun(mSceneMgr, mCamera, &mBulletContext));
+		break;
+	case OIS::KC_3:
+		mWeapon.SetState(new MachineGun(mSceneMgr, mCamera, &mBulletContext));
 		break;
 	case OIS::KC_5:
 		mWeapon.SetState(new SniperRifle(mSceneMgr, mCamera, &mBulletContext, mSniperScopeOverlay));

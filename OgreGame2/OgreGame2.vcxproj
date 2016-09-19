@@ -89,6 +89,7 @@
     <ClInclude Include="BulletContext.hpp" />
     <ClInclude Include="FPSController.hpp" />
     <ClInclude Include="HandGun.hpp" />
+    <ClInclude Include="MachineGun.hpp" />
     <ClInclude Include="MainApplication.hpp" />
     <ClInclude Include="OgreContext.hpp" />
     <ClInclude Include="Projectile.hpp" />
