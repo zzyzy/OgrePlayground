@@ -94,6 +94,7 @@
     <ClInclude Include="OgreContext.hpp" />
     <ClInclude Include="Projectile.hpp" />
     <ClInclude Include="SceneBuilder.h" />
+    <ClInclude Include="ShotGun.hpp" />
     <ClInclude Include="SniperRifle.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

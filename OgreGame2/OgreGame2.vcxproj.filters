@@ -69,6 +69,9 @@
     <ClInclude Include="MachineGun.hpp">
       <Filter>Header Files\Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="ShotGun.hpp">
+      <Filter>Header Files\Weapons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
