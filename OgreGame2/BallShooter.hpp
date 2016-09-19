@@ -121,6 +121,8 @@ public:
 
 		// Create cube mesh with unique name
 		Ogre::Entity* cube = mSceneMgr->createEntity(entityName, "sphere.mesh");
+		cube->setMaterialName("Examples/SphereMappedRustySteel");
+		cube->setCastShadows(true);
 		Ogre::SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		node->attachObject(cube);
 		// Scale it to appropriate size

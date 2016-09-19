@@ -143,6 +143,8 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 {
 	sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 
+	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+
 	auto* light = sceneMgr->createLight("MainLight");
 	light->setPosition(0, 0, 0);
 
@@ -171,13 +173,16 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 			Ogre::Vector3::UNIT_Y
 		);
 
+		// TODO Shadows doesn't seem to be working on planes?
 		// Ground
 		auto *groundEntity = mSceneMgr->createEntity("plane");
+		groundEntity->setCastShadows(false);
 		mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
 		groundEntity->setMaterialName("Examples/GrassFloor");
 
 		// Ceiling
 		auto *ceilingEntity = mSceneMgr->createEntity("plane");
+		ceilingEntity->setCastShadows(false);
 		auto *ceilingNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		ceilingNode->attachObject(ceilingEntity);
 		ceilingEntity->setMaterialName("Examples/BeachStones");
@@ -190,6 +195,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 
 		// Front wall
 		walls[0] = mSceneMgr->createEntity("wall");
+		walls[0]->setCastShadows(false);
 		wallNodes[0] = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		wallNodes[0]->attachObject(walls[0]);
 		walls[0]->setMaterialName("Examples/Rockwall");
@@ -197,6 +203,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 
 		// Right wall
 		walls[1] = mSceneMgr->createEntity("wall");
+		walls[1]->setCastShadows(false);
 		wallNodes[1] = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		wallNodes[1]->attachObject(walls[1]);
 		walls[1]->setMaterialName("Examples/Rockwall");
@@ -205,6 +212,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 
 		// Left wall
 		walls[2] = mSceneMgr->createEntity("wall");
+		walls[2]->setCastShadows(false);
 		wallNodes[2] = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		wallNodes[2]->attachObject(walls[2]);
 		walls[2]->setMaterialName("Examples/Rockwall");
@@ -213,6 +221,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 
 		// Back wall
 		walls[3] = mSceneMgr->createEntity("wall");
+		walls[3]->setCastShadows(false);
 		wallNodes[3] = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		wallNodes[3]->attachObject(walls[3]);
 		walls[3]->setMaterialName("Examples/Rockwall");
