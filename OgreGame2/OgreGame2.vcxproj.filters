@@ -19,10 +19,10 @@
     <Filter Include="Scene Definition Files">
       <UniqueIdentifier>{e7ceaac1-f84d-4839-a052-618e9d520173}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Weapon States">
+    <Filter Include="Header Files\Weapons">
       <UniqueIdentifier>{238a161e-4e0d-4f59-aeed-1f5557f8eded}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Weapon States">
+    <Filter Include="Source Files\Weapons">
       <UniqueIdentifier>{70444b4a-a37e-457c-bf4c-c9d2cc9586f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -49,19 +49,22 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WeaponState.hpp">
-      <Filter>Header Files\Weapon States</Filter>
+      <Filter>Header Files\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="BallShooter.hpp">
-      <Filter>Header Files\Weapon States</Filter>
+      <Filter>Header Files\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="Weapon.hpp">
-      <Filter>Header Files\Weapon States</Filter>
+      <Filter>Header Files\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="HandGun.hpp">
-      <Filter>Header Files\Weapon States</Filter>
+      <Filter>Header Files\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="SniperRifle.hpp">
-      <Filter>Header Files\Weapon States</Filter>
+      <Filter>Header Files\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.hpp">
+      <Filter>Header Files\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
