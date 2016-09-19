@@ -47,7 +47,7 @@ public:
 		else if (input == Input::MOUSEUP)
 		{
 
-			if (mElapsedDelay >= 2)
+			if (mElapsedDelay >= 1)
 			{
 				Shoot();
 				mElapsedDelay = 0;
@@ -70,7 +70,7 @@ public:
 			}
 		}
 
-		if (mElapsedDelay < 2)
+		if (mElapsedDelay < 1)
 		{
 			mElapsedDelay += deltaTime;
 		}
