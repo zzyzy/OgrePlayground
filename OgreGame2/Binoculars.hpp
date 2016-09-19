@@ -36,6 +36,12 @@ public:
 	{
 	}
 
+	~Binoculars()
+	{
+		mZoomOverlay->hide();
+		mCamera->setFOVy(mDefaultFOV);
+	}
+
 	WeaponState* handleInput(Weapon& weapon, const Input& input) override
 	{
 		if (input == Input::RIGHTMOUSEDOWN)

@@ -42,6 +42,12 @@ public:
 		mDefaultFOV = mCamera->getFOVy();
 	}
 
+	~SniperRifle()
+	{
+		mScopeOverlay->hide();
+		mCamera->setFOVy(mDefaultFOV);
+	}
+
 	WeaponState* handleInput(Weapon& weapon, const Input& input) override
 	{
 		if (input == Input::MOUSEDOWN)
