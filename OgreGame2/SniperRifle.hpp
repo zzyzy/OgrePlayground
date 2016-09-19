@@ -31,7 +31,7 @@ public:
 	                     Ogre::Overlay* scopeOverlay,
 	                     Ogre::Radian defaultFOV,
 	                     const float& delayBetweenShots = 3.0f,
-	                     const float& impactForce = 50.0f) :
+	                     const float& impactForce = 120.0f) :
 		WeaponState(sceneMgr, camera, bulletContext),
 		mDelayBetweenShots(delayBetweenShots),
 		mElapsedDelay(mDelayBetweenShots),
