@@ -48,6 +48,7 @@ private:
 	Ogre::Overlay* mSniperScopeOverlay;
 	Ogre::Overlay* mBinocularOverlay;
 	OgreBites::ParamsPanel* mWeaponPanel;
+	OgreBites::ProgressBar* mChargeBar;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

@@ -151,6 +151,11 @@ public:
 		return "Ball Shooter";
 	}
 
+	float chargeTime() const
+	{
+		return mChargeTime;
+	}
+
 private:
 	bool mCharging;
 	float mChargeTime;

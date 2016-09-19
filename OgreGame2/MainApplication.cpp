@@ -17,7 +17,8 @@
 MainApplication::MainApplication() :
 	mSniperScopeOverlay(nullptr),
 	mBinocularOverlay(nullptr),
-	mWeaponPanel(nullptr)
+	mWeaponPanel(nullptr), 
+	mChargeBar(nullptr)
 {
 	mBulletContext.Setup();
 }
@@ -48,6 +49,18 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	else
 	{
 		mWeaponPanel->setParamValue(1, std::to_string(0));
+	}
+
+	if (mWeapon.GetStateName() == "Ball Shooter")
+	{
+		auto progress = ((BallShooter*)mWeapon.GetState())->chargeTime();
+		mChargeBar->setProgress(progress);
+	} else if (mWeapon.GetStateName() == "Grenade Launcher")
+	{
+		
+	} else
+	{
+		mChargeBar->setProgress(0);
 	}
 
 	return true;
@@ -422,4 +435,5 @@ void MainApplication::setupUI(Ogre::SceneManager* const sceneMgr)
 	items.push_back("Zoom Level");
 
 	mWeaponPanel = mTrayMgr->createParamsPanel(OgreBites::TL_BOTTOMRIGHT, "WeaponPanel", 200, items);
+	mChargeBar = mTrayMgr->createProgressBar(OgreBites::TL_BOTTOMRIGHT, "ChargeBar", "Charge Level", 200, 0);
 }
