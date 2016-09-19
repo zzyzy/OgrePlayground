@@ -146,6 +146,11 @@ public:
 		mBallPool.insert(std::make_pair(entityName, projectile));
 	}
 
+	std::string name() override
+	{
+		return "Ball Shooter";
+	}
+
 private:
 	bool mCharging;
 	float mChargeTime;

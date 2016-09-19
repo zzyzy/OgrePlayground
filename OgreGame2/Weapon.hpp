@@ -40,6 +40,17 @@ public:
 		mState = state;
 	}
 
+	// TODO Temporary. Need a way to get current state.
+	const WeaponState* GetState() const
+	{
+		return mState;
+	}
+
+	std::string GetStateName() const
+	{
+		return mState->name();
+	}
+
 	void handleInput(WeaponState::Input input)
 	{
 		auto* state = mState->handleInput(*this, input);

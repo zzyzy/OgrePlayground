@@ -79,6 +79,11 @@ public:
 		mBulletContext->ShootRay(convert(mouseRay.getOrigin()), convert(mouseRay.getPoint(1000)), impulse);
 	}
 
+	std::string name() override
+	{
+		return "Machine Gun";
+	}
+
 private:
 	float mDelayBetweenShots;
 	float mElapsedDelay;

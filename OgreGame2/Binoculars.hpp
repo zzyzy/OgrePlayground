@@ -70,6 +70,21 @@ public:
 		}
 	}
 
+	std::string name() override
+	{
+		return "Binocular";
+	}
+
+	// TODO Use a base class called "ZoomableWeapon" instead of this ugly way
+	int zoomLevel() const
+	{
+		if (mZoomLevel == ZoomLevel::NONE)
+		{
+			return 0;
+		}
+		return 1;
+	}
+
 private:
 	ZoomLevel mZoomLevel;
 	Ogre::Overlay* mZoomOverlay;

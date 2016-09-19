@@ -15,7 +15,9 @@
 #include "Binoculars.hpp"
 
 MainApplication::MainApplication() :
-	mSniperScopeOverlay(nullptr)
+	mSniperScopeOverlay(nullptr),
+	mBinocularOverlay(nullptr),
+	mWeaponPanel(nullptr)
 {
 	mBulletContext.Setup();
 }
@@ -30,6 +32,24 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	if (!mFPSController.CaptureRenderQueue(evt)) return false;
 	mBulletContext.Update(evt.timeSinceLastFrame);
 	mWeapon.update(evt.timeSinceLastFrame);
+
+	mWeaponPanel->setParamValue(0, mWeapon.GetStateName());
+
+	if (mWeapon.GetStateName() == "Binocular")
+	{
+		auto zoom = ((Binoculars*)mWeapon.GetState())->zoomLevel();
+		mWeaponPanel->setParamValue(1, std::to_string(zoom));
+	}
+	else if (mWeapon.GetStateName() == "Sniper Rifle")
+	{
+		auto zoom = ((SniperRifle*)mWeapon.GetState())->zoomLevel();
+		mWeaponPanel->setParamValue(1, std::to_string(zoom));
+	}
+	else
+	{
+		mWeaponPanel->setParamValue(1, std::to_string(0));
+	}
+
 	return true;
 }
 
@@ -393,4 +413,13 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 			mBinocularOverlay->add2D(imageContainer);
 		}
 	}
+}
+
+void MainApplication::setupUI(Ogre::SceneManager* const sceneMgr)
+{
+	Ogre::StringVector items;
+	items.push_back("Equipped");
+	items.push_back("Zoom Level");
+
+	mWeaponPanel = mTrayMgr->createParamsPanel(OgreBites::TL_BOTTOMRIGHT, "WeaponPanel", 200, items);
 }

@@ -61,6 +61,11 @@ public:
 		// Shoot ray and apply impulse if hit
 		mBulletContext->ShootRay(convert(mouseRay.getOrigin()), convert(mouseRay.getPoint(1000)), impulse);
 	}
+
+	std::string name() override
+	{
+		return "Hand Gun";
+	}
 };
 
 #endif // #ifndef __HANDGUN_HPP__

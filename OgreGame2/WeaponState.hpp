@@ -55,6 +55,9 @@ public:
 	virtual WeaponState* handleInput(Weapon& weapon, const Input& input) = 0;
 	virtual void update(Weapon& weapon, const float& deltaTime) = 0;
 
+	// TODO Temporary. Need a way to get current state.
+	virtual std::string name() = 0;
+
 protected:
 	Ogre::SceneManager* mSceneMgr;
 	Ogre::Camera* mCamera;

@@ -68,6 +68,7 @@ protected:
     virtual void setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) const;
     virtual void setupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const;
     virtual void setupScene(Ogre::SceneManager* const sceneMgr) = 0;
+	virtual void setupUI(Ogre::SceneManager* const sceneMgr) = 0;
 
     // Ogre
     Ogre::Root* mRoot;

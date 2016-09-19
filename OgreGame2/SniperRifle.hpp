@@ -108,6 +108,24 @@ public:
 		}
 	}
 
+	std::string name() override
+	{
+		return "Sniper Rifle";
+	}
+
+	// TODO Use a base class called "ZoomableWeapon" instead of this ugly way
+	int zoomLevel() const
+	{
+		if (mZoomLevel == ZoomLevel::NONE)
+		{
+			return 0;
+		} else if (mZoomLevel == ZoomLevel::LEVEL1)
+		{
+			return 1;
+		}
+		return 2;
+	}
+
 private:
 	float mDelayBetweenShots;
 	float mElapsedDelay;

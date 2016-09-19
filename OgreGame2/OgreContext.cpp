@@ -109,8 +109,9 @@ bool OgreContext::Setup()
 	mInputContext.mMouse = mMouse;
 	mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mInputContext, this);
 	mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-	mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
+	//mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
 	mTrayMgr->hideCursor();
+	setupUI(mSceneMgr);
 
     mRoot->addFrameListener(this);
     mMouse->setEventCallback(this);

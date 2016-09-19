@@ -40,12 +40,14 @@ private:
 	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 
 	void setupScene(Ogre::SceneManager* const sceneMgr) override;
+	void setupUI(Ogre::SceneManager* const sceneMgr) override;
 
 	BulletContext mBulletContext;
 	FPSController mFPSController;
 	Weapon mWeapon;
 	Ogre::Overlay* mSniperScopeOverlay;
 	Ogre::Overlay* mBinocularOverlay;
+	OgreBites::ParamsPanel* mWeaponPanel;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__
