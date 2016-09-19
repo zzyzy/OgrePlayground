@@ -46,11 +46,9 @@ public:
 		}
 		else if (input == Input::MOUSEUP)
 		{
-			std::cout << "Delay: " << mElapsedDelay << std::endl;
 
 			if (mElapsedDelay >= 2)
 			{
-				std::cout << "Shoot" << std::endl;
 				Shoot();
 				mElapsedDelay = 0;
 			}
@@ -59,7 +57,6 @@ public:
 			mChargeTime = 0;
 		}
 
-		std::cout << (mCharging ? "Charging" : "Not charging") << std::endl;
 		return nullptr;
 	}
 
@@ -70,8 +67,6 @@ public:
 			if (mChargeTime < 1)
 			{
 				mChargeTime += deltaTime;
-				std::cout << "Charging" << std::endl;
-				std::cout << "Charged: " << mChargeTime << std::endl;
 			}
 		}
 
@@ -114,8 +109,6 @@ public:
 		linearVelocity *= 30.0f * mChargeTime;
 
 		// Create and shoot the box
-		//weapon.Shoot(convert(mouseRay.getOrigin()), btQuaternion(0, 0, 0, 1), linearVelocity);
-
 		auto position = convert(mouseRay.getOrigin());
 		auto orientation = btQuaternion(0, 0, 0, 1);
 
@@ -127,11 +120,11 @@ public:
 		mBoxCount++;
 
 		// Create cube mesh with unique name
-		Ogre::Entity* cube = mSceneMgr->createEntity(entityName, "cube.mesh");
+		Ogre::Entity* cube = mSceneMgr->createEntity(entityName, "sphere.mesh");
 		Ogre::SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		node->attachObject(cube);
 		// Scale it to appropriate size
-		node->scale(0.02f, 0.02f, 0.02f);
+		node->scale(0.01f, 0.01f, 0.01f);
 
 		// Create a collision shape
 		// Note that the size should match the size of the object that will be displayed
