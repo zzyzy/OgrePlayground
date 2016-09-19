@@ -14,6 +14,7 @@
 #define __HANDGUN_HPP__
 
 #include "Weapon.hpp"
+#include <random>
 
 class HandGun : public WeaponState
 {
@@ -36,9 +37,13 @@ public:
 	{
 	}
 
-	void Shoot()
+	void Shoot() const
 	{
-		Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(0.5f, 0.5f);
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<> dis(0.4f, 0.6f);
+
+		Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(dis(gen), dis(gen));
 
 		// Get a point one unit from the mouse ray origin, in the direction of the ray
 		Ogre::Vector3 destination = mouseRay.getPoint(1);
@@ -51,13 +56,11 @@ public:
 
 		impulse.normalize();
 		// Scale to appropriate velocity
-		impulse *= 50.0f;
+		impulse *= 10.0f;
 
 		// Shoot ray and apply impulse if hit
 		mBulletContext->ShootRay(convert(mouseRay.getOrigin()), convert(mouseRay.getPoint(1000)), impulse);
 	}
-
-private:
 };
 
 #endif // #ifndef __HANDGUN_HPP__
