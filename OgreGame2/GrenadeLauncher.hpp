@@ -139,7 +139,7 @@ public:
 		// TODO Import grenade model/mesh
 		auto entity = mSceneMgr->createEntity("sphere.mesh");
 		auto node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-		entity->setMaterialName("Examples/CelShading");
+		entity->setMaterialName("Examples/Chrome");
 		entity->setCastShadows(true);
 		node->attachObject(entity);
 		node->scale(0.01f, 0.01f, 0.01f);
