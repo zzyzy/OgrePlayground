@@ -43,7 +43,6 @@ Currently it only supports building with Visual Studio 2012 and above.
     * Currently the state machine just returns a hard-coded text for the current state.
     * I was thinking if I were to use enums for this problem, then I need to add new enums for every new state that I may add in the future.
     * I'd like to avoid that if possible and consider it as the worst case solution.
-    * Another idea would be to define an abstract method in the base class and .
 * Binocular should be able to zoom using mouse scrolling.
 * Import new model for grenade projectile.
 * For zooming in both the binocular and sniper rifle, it would probably be better if the camera is moved closer instead of adjusting the FOV.
