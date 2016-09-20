@@ -89,6 +89,8 @@
     <ClInclude Include="Binoculars.hpp" />
     <ClInclude Include="BulletContext.hpp" />
     <ClInclude Include="FPSController.hpp" />
+    <ClInclude Include="Grenade.hpp" />
+    <ClInclude Include="GrenadeLauncher.hpp" />
     <ClInclude Include="HandGun.hpp" />
     <ClInclude Include="MachineGun.hpp" />
     <ClInclude Include="MainApplication.hpp" />

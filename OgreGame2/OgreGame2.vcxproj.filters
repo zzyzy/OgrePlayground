@@ -75,6 +75,12 @@
     <ClInclude Include="Binoculars.hpp">
       <Filter>Header Files\Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="Grenade.hpp">
+      <Filter>Header Files\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="GrenadeLauncher.hpp">
+      <Filter>Header Files\Weapons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

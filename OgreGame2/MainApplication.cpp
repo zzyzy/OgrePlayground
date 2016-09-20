@@ -13,6 +13,7 @@
 #include "MachineGun.hpp"
 #include "ShotGun.hpp"
 #include "Binoculars.hpp"
+#include "GrenadeLauncher.hpp"
 
 MainApplication::MainApplication() : mFPSController(nullptr),
                                      mSniperScopeOverlay(nullptr),
@@ -58,6 +59,11 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		auto progress = dynamic_cast<const BallShooter*>(mWeapon.GetState())->chargeTime();
 		mChargeBar->setProgress(progress);
 	}
+	else if (mWeapon.GetStateName() == "Grenade")
+	{
+		auto progress = dynamic_cast<const GrenadeLauncher*>(mWeapon.GetState())->chargeTime();
+		mChargeBar->setProgress(progress);
+	}
 	else
 	{
 		mChargeBar->setProgress(0);
@@ -89,6 +95,9 @@ bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 		break;
 	case OIS::KC_6:
 		mWeapon.SetState(new Binoculars(mSceneMgr, mCamera, &mBulletContext, mBinocularOverlay, mDefaultFOV));
+		break;
+	case OIS::KC_7:
+		mWeapon.SetState(new GrenadeLauncher(mSceneMgr, mCamera, &mBulletContext));
 		break;
 	default:
 		break;
