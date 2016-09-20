@@ -14,23 +14,25 @@
 #include "ShotGun.hpp"
 #include "Binoculars.hpp"
 
-MainApplication::MainApplication() :
-	mSniperScopeOverlay(nullptr),
-	mBinocularOverlay(nullptr),
-	mWeaponPanel(nullptr), 
-	mChargeBar(nullptr)
+MainApplication::MainApplication() : mFPSController(nullptr),
+                                     mSniperScopeOverlay(nullptr),
+                                     mBinocularOverlay(nullptr),
+                                     mWeaponPanel(nullptr),
+                                     mChargeBar(nullptr)
 {
 	mBulletContext.Setup();
+	mFPSController = new FPSController(&mBulletContext);
 }
 
 MainApplication::~MainApplication()
 {
+	delete mFPSController;
 }
 
 bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
 	if (!OgreContext::frameRenderingQueued(evt)) return false;
-	if (!mFPSController.CaptureRenderQueue(evt)) return false;
+	if (!mFPSController->CaptureRenderQueue(evt)) return false;
 	mBulletContext.Update(evt.timeSinceLastFrame);
 	mWeapon.update(evt.timeSinceLastFrame);
 
@@ -38,12 +40,12 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 	if (mWeapon.GetStateName() == "Binocular")
 	{
-		auto zoom = ((Binoculars*)mWeapon.GetState())->zoomLevel();
+		auto zoom = dynamic_cast<const Binoculars*>(mWeapon.GetState())->zoomLevel();
 		mWeaponPanel->setParamValue(1, std::to_string(zoom));
 	}
 	else if (mWeapon.GetStateName() == "Sniper Rifle")
 	{
-		auto zoom = ((SniperRifle*)mWeapon.GetState())->zoomLevel();
+		auto zoom = dynamic_cast<const SniperRifle*>(mWeapon.GetState())->zoomLevel();
 		mWeaponPanel->setParamValue(1, std::to_string(zoom));
 	}
 	else
@@ -53,12 +55,10 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 	if (mWeapon.GetStateName() == "Ball Shooter")
 	{
-		auto progress = ((BallShooter*)mWeapon.GetState())->chargeTime();
+		auto progress = dynamic_cast<const BallShooter*>(mWeapon.GetState())->chargeTime();
 		mChargeBar->setProgress(progress);
-	} else if (mWeapon.GetStateName() == "Grenade Launcher")
-	{
-		
-	} else
+	}
+	else
 	{
 		mChargeBar->setProgress(0);
 	}
@@ -68,7 +68,7 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 {
-	if (!mFPSController.CaptureKeyPressed(ke)) return false;
+	if (!mFPSController->CaptureKeyPressed(ke)) return false;
 
 	switch (ke.key)
 	{
@@ -99,26 +99,27 @@ bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 
 bool MainApplication::keyReleased(const OIS::KeyEvent& ke)
 {
-	if (!mFPSController.CaptureKeyReleased(ke)) return false;
+	if (!mFPSController->CaptureKeyReleased(ke)) return false;
 	return true;
 }
 
 bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 {
 	if (!OgreContext::mouseMoved(me)) return false;
-	if (!mFPSController.CaptureMouseMoved(me)) return false;
+	if (!mFPSController->CaptureMouseMoved(me)) return false;
 	return true;
 }
 
 bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
 	if (!OgreContext::mousePressed(me, id)) return false;
-	if (!mFPSController.CaptureMousePressed(me, id)) return false;
+	if (!mFPSController->CaptureMousePressed(me, id)) return false;
 
 	if (id == OIS::MB_Left)
 	{
 		mWeapon.handleInput(WeaponState::Input::MOUSEDOWN);
-	} else if (id == OIS::MB_Right)
+	}
+	else if (id == OIS::MB_Right)
 	{
 		mWeapon.handleInput(WeaponState::Input::RIGHTMOUSEDOWN);
 	}
@@ -129,7 +130,7 @@ bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID
 bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
 	if (!OgreContext::mouseReleased(me, id)) return false;
-	if (!mFPSController.CaptureMouseReleased(me, id)) return false;
+	if (!mFPSController->CaptureMouseReleased(me, id)) return false;
 
 	if (id == OIS::MB_Left)
 	{
@@ -175,23 +176,23 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 
 		// TODO Shadows doesn't seem to be working on planes?
 		// Ground
-		auto *groundEntity = mSceneMgr->createEntity("plane");
+		auto* groundEntity = mSceneMgr->createEntity("plane");
 		groundEntity->setCastShadows(false);
 		mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(groundEntity);
 		groundEntity->setMaterialName("Examples/GrassFloor");
 
 		// Ceiling
-		auto *ceilingEntity = mSceneMgr->createEntity("plane");
+		auto* ceilingEntity = mSceneMgr->createEntity("plane");
 		ceilingEntity->setCastShadows(false);
-		auto *ceilingNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+		auto* ceilingNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		ceilingNode->attachObject(ceilingEntity);
 		ceilingEntity->setMaterialName("Examples/BeachStones");
 		ceilingNode->rotate(Ogre::Vector3::UNIT_X, Ogre::Degree(180));
 		ceilingNode->translate(Ogre::Vector3(0, 40, 0));
 
 		// Place walls
-		Ogre::Entity *walls[4];
-		Ogre::SceneNode *wallNodes[4];
+		Ogre::Entity* walls[4];
+		Ogre::SceneNode* wallNodes[4];
 
 		// Front wall
 		walls[0] = mSceneMgr->createEntity("wall");
@@ -227,7 +228,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 		walls[3]->setMaterialName("Examples/Rockwall");
 		wallNodes[3]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(180));
 		wallNodes[3]->translate(Ogre::Vector3(0, 20, 50));
-	
+
 		// Setup rigidbodies
 		btTransform transform;
 		btVector3 origin;
@@ -298,21 +299,16 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 	// Place objects in scene
 	{
 		// Create a row of boxes
-		int boxCount = 0;
-
 		for (int i = -20; i <= 20; i += 5)
 		{
-			char entityName[8];
-			sprintf(entityName, "cube%d", boxCount++);
-
 			// Create cube mesh with unique name
-			Ogre::Entity* cube = mSceneMgr->createEntity(entityName, "cube.mesh");
+			Ogre::Entity* cube = mSceneMgr->createEntity("cube.mesh");
 			cube->setMaterialName("Examples/BumpyMetal");
 			cube->setCastShadows(true);
 			auto node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 			node->attachObject(cube);
 			// Scale it to appropriate size
-			node->scale(0.04, 0.04, 0.04);
+			node->scale(0.04f, 0.04f, 0.04f);
 
 			// Create a collision shape
 			// Note that the size should match the size of the object that will be displayed
@@ -328,7 +324,63 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 			btRigidBody* rigidBody = mBulletContext.CreateRigidBody(1.0f, startingTrans, collisionShape, node);
 
 			// Set the rigid body's friction
-			rigidBody->setFriction(0.9);
+			rigidBody->setFriction(0.9f);
+		}
+
+		for (int i = -20; i <= 20; i += 5)
+		{
+			// Create cube mesh with unique name
+			Ogre::Entity* cube = mSceneMgr->createEntity("cube.mesh");
+			cube->setMaterialName("Examples/Checker");
+			cube->setCastShadows(true);
+			auto node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+			node->attachObject(cube);
+			// Scale it to appropriate size
+			node->scale(0.06f, 0.06f, 0.06f);
+
+			// Create a collision shape
+			// Note that the size should match the size of the object that will be displayed
+			btCollisionShape* collisionShape = new btBoxShape(btVector3(3, 3, 3));
+
+			// The object's starting transformation
+			btTransform startingTrans;
+			startingTrans.setIdentity();
+			startingTrans.setOrigin(btVector3(i, 10, -10));
+			startingTrans.setRotation(btQuaternion(0, 0, 0, 1));
+
+			// Create the rigid body
+			btRigidBody* rigidBody = mBulletContext.CreateRigidBody(2.0f, startingTrans, collisionShape, node);
+
+			// Set the rigid body's friction
+			rigidBody->setFriction(1.8f);
+		}
+
+		for (int i = -20; i <= 20; i += 5)
+		{
+			// Create cube mesh with unique name
+			Ogre::Entity* cube = mSceneMgr->createEntity("cube.mesh");
+			cube->setMaterialName("Examples/TextureEffect3");
+			cube->setCastShadows(true);
+			auto node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+			node->attachObject(cube);
+			// Scale it to appropriate size
+			node->scale(0.08f, 0.08f, 0.08f);
+
+			// Create a collision shape
+			// Note that the size should match the size of the object that will be displayed
+			btCollisionShape* collisionShape = new btBoxShape(btVector3(4, 4, 4));
+
+			// The object's starting transformation
+			btTransform startingTrans;
+			startingTrans.setIdentity();
+			startingTrans.setOrigin(btVector3(i, 10, -20));
+			startingTrans.setRotation(btQuaternion(0, 0, 0, 1));
+
+			// Create the rigid body
+			btRigidBody* rigidBody = mBulletContext.CreateRigidBody(3.0f, startingTrans, collisionShape, node);
+
+			// Set the rigid body's friction
+			rigidBody->setFriction(2.7f);
 		}
 	}
 
@@ -339,7 +391,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 		cameraNode->attachObject(mCamera);
 		mCamera->setPosition(0.0f, 0.0f, 0.0f);
 		cameraNode->setPosition(0.0f, 10.0f, 0.0f);
-		mFPSController.Attach(cameraNode, fpsPlayer);
+		mFPSController->Attach(cameraNode, fpsPlayer);
 		mWeapon.SetState(new BallShooter(mSceneMgr, mCamera, &mBulletContext));
 		mDefaultFOV = mCamera->getFOVy();
 	}
@@ -355,10 +407,10 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 
 		manual->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_LIST);
 
-		manual->position(-0.05, 0.0, 0.0);
-		manual->position(0.05, 0.0, 0.0);
-		manual->position(0.0, -0.05, 0.0);
-		manual->position(0.0, 0.05, 0.0);
+		manual->position(-0.05f, 0.0f, 0.0f);
+		manual->position(0.05f, 0.0f, 0.0f);
+		manual->position(0.0f, -0.05f, 0.0f);
+		manual->position(0.0f, 0.05f, 0.0f);
 
 		manual->end();
 
@@ -378,7 +430,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 	{
 		// Get the pointer to the overlay manager
 		Ogre::OverlayManager* overlayManager = Ogre::OverlayManager::getSingletonPtr();
-		
+
 		// Load sniper scope image and create overlay
 		{
 			// Create an overlay

@@ -8,17 +8,33 @@
 
 #include "FPSController.hpp"
 
-FPSController::FPSController() :
+FPSController::FPSController(BulletContext* bulletContext) :
 	mHead(nullptr),
 	mBody(nullptr),
 	mPosition(0, 0, 0),
 	mSpeed(200), // Movement speed
-	mMouseSensitivity(0.25) // Change this for mouse sensitivity
+	mMouseSensitivity(0.25), // Change this for mouse sensitivity
+	mBulletContext(bulletContext),
+	mGhostObject(nullptr)
 {
+	auto origin = convert(mPosition);
+	// TODO May need to change this
+	origin.setY(origin.getY() + 3.0f); // Don't let the capsule touch the ground
+
+	btTransform startTrans;
+	startTrans.setIdentity();
+	startTrans.setOrigin(origin);
+
+	// TODO Add height and width field
+	btCollisionShape* shape = new btCapsuleShape(2.0f, 1.0f);
+
+	mGhostObject = mBulletContext->CreateGhostObject(startTrans, shape);
+	mGhostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 }
 
 FPSController::~FPSController()
 {
+	mBulletContext->DestroyGhostObject(mGhostObject);
 	mHead = nullptr;
 	mBody = nullptr;
 }
@@ -44,7 +60,6 @@ bool FPSController::CaptureKeyPressed(const OIS::KeyEvent& ke)
 	// Split into two to allow the user to move 
 	// forward/backward and strafe left/right at 
 	// the same time
-
 	if (ke.key == OIS::KC_W)
 	{
 		mPosition.z += -mSpeed; // Move into the screen (forward)
@@ -133,7 +148,28 @@ bool FPSController::CaptureMouseReleased(const OIS::MouseEvent& me, OIS::MouseBu
 
 bool FPSController::CaptureRenderQueue(const Ogre::FrameEvent& fe) const
 {
-	// Smooth movement
+	auto originalPosition = mBody->getPosition();
 	mBody->translate(mPosition * fe.timeSinceLastFrame, Ogre::Node::TS_LOCAL);
+	auto newPosition = mBody->getPosition();
+	mBody->setPosition(originalPosition);
+
+	auto position = convert(newPosition);
+	position.setY(position.getY() + 3.0f);
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(position);
+	mGhostObject->setWorldTransform(transform);
+
+	auto count = mBulletContext->GetAllCollidedObjects(mGhostObject).size();
+
+	if (count <= 0)
+	{
+		mBody->setPosition((originalPosition + newPosition) / 2);
+	}
+	else
+	{
+		mBody->setPosition(originalPosition);
+	}
+
 	return true;
 }

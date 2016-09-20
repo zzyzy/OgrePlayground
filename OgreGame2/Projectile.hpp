@@ -21,6 +21,21 @@ public:
 	explicit Projectile(const float& timeToLive, btRigidBody* body) :
 		mTimeToLive(timeToLive),
 		mLivingTime(0.0f),
+		mDecayable(false),
+		mTotalDecayTime(0.0f),
+		mDecayTime(0.0f),
+		mBody(body)
+	{
+	}
+
+	explicit Projectile(const float& timeToLive,
+	                    btRigidBody* body, const bool& decayable,
+	                    const float& totalDecayTime) :
+		mTimeToLive(timeToLive),
+		mLivingTime(0.0f),
+		mDecayable(decayable),
+		mTotalDecayTime(totalDecayTime),
+		mDecayTime(0.0f),
 		mBody(body)
 	{
 	}
@@ -35,9 +50,19 @@ public:
 		{
 			mLivingTime += deltaTime;
 		}
+		else
+		{
+			if (mDecayable)
+			{
+				if (mDecayTime < mTotalDecayTime)
+				{
+					mDecayTime += deltaTime;
+				}
+			}
+		}
 	}
 
-	virtual bool canKillself() const
+	bool hasDied() const
 	{
 		if (mLivingTime >= mTimeToLive)
 		{
@@ -47,12 +72,36 @@ public:
 		return false;
 	}
 
-	virtual void killMyself(Ogre::SceneManager* sceneMgr, BulletContext* bulletContext)
+	bool hasDecayed() const
 	{
-		OnDying(sceneMgr, bulletContext);
+		if (mDecayable && mDecayTime >= mTotalDecayTime)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	bool isDecaying() const
+	{
+		if (mDecayable && mDecayTime > 0.0f)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	void killMyself(Ogre::SceneManager* sceneMgr, BulletContext* bulletContext)
+	{
+		if (mBody == nullptr) return;
+		if (mDecayable)
+		{
+			OnDying(sceneMgr, bulletContext);
+		}
 
 		// Get the scene node from the motion state of the rigidbody
-		Ogre::SceneNode* node = static_cast<BulletContext::OgreMotionState*>(mBody->getMotionState())->GetNode();
+		Ogre::SceneNode* node = static_cast<BulletContext::MotionState*>(mBody->getMotionState())->GetNode();
 
 		// Get the entity from the node 
 		// Assumes that you only have one entity, if you have more just loop through to get them all in order to delete them
@@ -67,6 +116,7 @@ public:
 
 		// Destroy the rigidbody from the physics system
 		bulletContext->DestroyRigidBody(mBody);
+		mBody = nullptr;
 	}
 
 	virtual void OnDying(Ogre::SceneManager* sceneMgr, BulletContext* bulletContext)
@@ -76,6 +126,9 @@ public:
 protected:
 	float mTimeToLive;
 	float mLivingTime;
+	bool mDecayable;
+	float mTotalDecayTime;
+	float mDecayTime;
 	btRigidBody* mBody;
 };
 

@@ -19,34 +19,38 @@
 #ifndef __FPSCONTROLLER_HPP__
 #define __FPSCONTROLLER_HPP__
 
+#include "BulletContext.hpp"
+
 class FPSController
 {
 public:
-    FPSController();
-    ~FPSController();
+	explicit FPSController(BulletContext* bulletContext);
+	~FPSController();
 
-    void Attach(Ogre::SceneNode* const head, Ogre::SceneNode* const body);
-    void AttachHead(Ogre::SceneNode* const head);
-    void AttachBody(Ogre::SceneNode* const body);
+	void Attach(Ogre::SceneNode* const head, Ogre::SceneNode* const body);
+	void AttachHead(Ogre::SceneNode* const head);
+	void AttachBody(Ogre::SceneNode* const body);
 
-    // Keyboard events
-    bool CaptureKeyPressed(const OIS::KeyEvent& ke);
-    bool CaptureKeyReleased(const OIS::KeyEvent& ke);
+	// Keyboard events
+	bool CaptureKeyPressed(const OIS::KeyEvent& ke);
+	bool CaptureKeyReleased(const OIS::KeyEvent& ke);
 
-    // Mouse events
-    bool CaptureMouseMoved(const OIS::MouseEvent& me) const;
-    bool CaptureMousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id);
-    bool CaptureMouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id);
+	// Mouse events
+	bool CaptureMouseMoved(const OIS::MouseEvent& me) const;
+	bool CaptureMousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id);
+	bool CaptureMouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id);
 
-    // Frame rendering queue event
-    bool CaptureRenderQueue(const Ogre::FrameEvent& fe) const;
+	// Frame rendering queue event
+	bool CaptureRenderQueue(const Ogre::FrameEvent& fe) const;
 
 private:
-    Ogre::SceneNode* mHead;
-    Ogre::SceneNode* mBody;
-    Ogre::Vector3 mPosition;
-    Ogre::Real mSpeed;
-    Ogre::Real mMouseSensitivity;
+	Ogre::SceneNode* mHead;
+	Ogre::SceneNode* mBody;
+	Ogre::Vector3 mPosition;
+	Ogre::Real mSpeed;
+	Ogre::Real mMouseSensitivity;
+	BulletContext* mBulletContext;
+	btPairCachingGhostObject* mGhostObject;
 };
 
 #endif // #ifndef __FPSCONTROLLER_HPP__

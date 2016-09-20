@@ -78,7 +78,7 @@ public:
 		for (auto it = mBallPool.begin(); it != mBallPool.end();)
 		{
 			it->second.update(deltaTime);
-			if (it->second.canKillself())
+			if (it->second.hasDied())
 			{
 				it->second.killMyself(mSceneMgr, mBulletContext);
 				it = mBallPool.erase(it);

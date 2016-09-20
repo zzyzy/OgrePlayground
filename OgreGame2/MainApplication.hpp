@@ -43,7 +43,7 @@ private:
 	void setupUI(Ogre::SceneManager* const sceneMgr) override;
 
 	BulletContext mBulletContext;
-	FPSController mFPSController;
+	FPSController* mFPSController;
 	Weapon mWeapon;
 	Ogre::Overlay* mSniperScopeOverlay;
 	Ogre::Overlay* mBinocularOverlay;

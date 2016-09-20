@@ -12,6 +12,8 @@
 #ifndef __BULLETCONTEXT_HPP__
 #define __BULLETCONTEXT_HPP__
 
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+
 inline Ogre::Vector3 convert(const btVector3& vec3)
 {
 	return Ogre::Vector3(vec3.x(), vec3.y(), vec3.z());
@@ -35,21 +37,24 @@ inline Ogre::Quaternion convert(const btQuaternion& Q)
 class BulletContext
 {
 public:
-	class OgreMotionState : public btMotionState
+	class MotionState : public btMotionState
 	{
 	public:
-		OgreMotionState(const btTransform& initialPosition, Ogre::SceneNode* node) :
-			mPosition(initialPosition), mSubject(node)
-		{
-		}
-
-		~OgreMotionState()
+		MotionState(const btTransform& initialPosition,
+		            Ogre::SceneNode* node) :
+			mPosition(initialPosition),
+			mSubject(node)
 		{
 		}
 
 		void SetNode(Ogre::SceneNode* node)
 		{
 			mSubject = node;
+		}
+
+		Ogre::SceneNode* GetNode() const
+		{
+			return mSubject;
 		}
 
 		void getWorldTransform(btTransform& worldTrans) const override
@@ -61,13 +66,8 @@ public:
 		{
 			auto rotation = worldTrans.getRotation();
 			auto position = worldTrans.getOrigin();
-			mSubject->setOrientation(rotation.w(), rotation.x(), rotation.y(), rotation.z());
-			mSubject->setPosition(position.x(), position.y(), position.z());
-		}
-
-		Ogre::SceneNode* GetNode() const
-		{
-			return mSubject;
+			mSubject->setOrientation(convert(rotation));
+			mSubject->setPosition(convert(position));
 		}
 
 	private:
@@ -78,13 +78,31 @@ public:
 	BulletContext();
 	~BulletContext();
 
+	// Basic lifecycle
 	void Setup();
 	void Teardown();
-	void Update(float deltaTime) const;
+	void Update(const float& deltaTime) const;
 
-	btRigidBody* CreateRigidBody(float mass, const btTransform& startTrans, btCollisionShape* collisionShape, Ogre::SceneNode* node);
+	// RigidBody
+	btRigidBody* CreateRigidBody(const float& mass, const btTransform& startTrans, btCollisionShape* collisionShape, Ogre::SceneNode* node);
 	void DestroyRigidBody(btRigidBody* rigidBody);
 
+	// GhostObject
+	btPairCachingGhostObject* BulletContext::CreateGhostObject(const btTransform& startTrans,
+	                                                           btCollisionShape* collisionShape,
+	                                                           btBroadphaseProxy::CollisionFilterGroups filterGroup = btBroadphaseProxy::AllFilter,
+	                                                           btBroadphaseProxy::CollisionFilterGroups filterMask = btBroadphaseProxy::AllFilter);
+	void DestroyGhostObject(btPairCachingGhostObject* ghostObject);
+
+	// RigidBody collision detection
+	btCollisionObject* GetCollidedObject(btCollisionObject* object) const;
+	std::set<btCollisionObject*> GetAllCollidedObjects(btCollisionObject* object) const;
+
+	// GhostObject collision detection
+	std::set<btCollisionObject*> GetAllCollidedObjects(btPairCachingGhostObject* object) const;
+
+	// Shoot ray and apply impulse
+	// TODO Change to ShootImpulseRay
 	void ShootRay(const btVector3& rayFromWorld, const btVector3& rayToWorld, const btVector3& impulse) const;
 
 private:
@@ -92,8 +110,8 @@ private:
 	btCollisionDispatcher* mDispatcher;
 	btBroadphaseInterface* mBroadphase;
 	btSequentialImpulseConstraintSolver* mSolver;
-	btDiscreteDynamicsWorld* mDynamicsWorld;
 	btAlignedObjectArray<btCollisionShape*> mCollisionShapes;
+	btDiscreteDynamicsWorld* mDynamicsWorld;
 };
 
 #endif // #ifndef __BULLETCONTEXT_HPP__
