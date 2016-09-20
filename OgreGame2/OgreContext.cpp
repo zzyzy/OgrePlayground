@@ -51,8 +51,6 @@ bool OgreContext::Setup()
     Ogre::String name, locType;
     Ogre::ConfigFile::SectionIterator secIt = cf.getSectionIterator();
 
-    auto ogreHome = getenv("OGRE_HOME");
-
     while (secIt.hasMoreElements())
     {
         Ogre::ConfigFile::SettingsMultiMap* settings = secIt.getNext();
@@ -61,7 +59,7 @@ bool OgreContext::Setup()
         for (it = settings->begin(); it != settings->end(); ++it)
         {
             locType = it->first;
-            name = ogreHome + it->second;
+            name = it->second;
 
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(name, locType);
         }
