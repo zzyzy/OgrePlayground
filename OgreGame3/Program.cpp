@@ -1,11 +1,27 @@
-// OgreGame3.cpp : Defines the entry point for the console application.
+//
+// OgreGame3/Program.cpp
+// 
+// Application entry point
+//
+// Author: Zhen Zhi Lee <leezhenzhi@gmail.com>
+//
+// Copyright (C) 2016 Zhen Zhi Lee.
 //
 
-#include "stdafx.h"
-
+#include "MainApplication.hpp"
 
 int main()
 {
-    return 0;
-}
+	MainApplication app;
 
+	try
+	{
+		app.Setup();
+	}
+	catch (Ogre::Exception ex)
+	{
+		std::cerr << ex.getFullDescription().c_str() << std::endl;
+	}
+
+	return 0;
+}
