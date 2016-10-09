@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreGame2", "OgreGame2\Ogre
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreGame1", "OgreGame1\OgreGame1.vcxproj", "{82CF5693-C72C-4C55-945C-FC1C63932B8C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreGame3", "OgreGame3\OgreGame3.vcxproj", "{B46B3CCC-0663-4AFB-9BD8-E6F69FBD0B6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -27,6 +29,10 @@ Global
 		{82CF5693-C72C-4C55-945C-FC1C63932B8C}.Debug|x86.Build.0 = Debug|Win32
 		{82CF5693-C72C-4C55-945C-FC1C63932B8C}.Release|x86.ActiveCfg = Release|Win32
 		{82CF5693-C72C-4C55-945C-FC1C63932B8C}.Release|x86.Build.0 = Release|Win32
+		{B46B3CCC-0663-4AFB-9BD8-E6F69FBD0B6E}.Debug|x86.ActiveCfg = Debug|Win32
+		{B46B3CCC-0663-4AFB-9BD8-E6F69FBD0B6E}.Debug|x86.Build.0 = Debug|Win32
+		{B46B3CCC-0663-4AFB-9BD8-E6F69FBD0B6E}.Release|x86.ActiveCfg = Release|Win32
+		{B46B3CCC-0663-4AFB-9BD8-E6F69FBD0B6E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
