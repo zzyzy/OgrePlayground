@@ -17,6 +17,7 @@
 
 #include "OgreContext.hpp"
 #include "BulletContext.hpp"
+#include "RTSController.hpp"
 
 class MainApplication : public OgreContext
 {
@@ -37,12 +38,13 @@ private:
 	bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 
-	void setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) const override;
+	void setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) override;
 	void setupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr) override;
 
 	void setupScene(Ogre::SceneManager* const sceneMgr) override;
 
 	BulletContext mBulletContext;
+	RTSController mRTSController;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

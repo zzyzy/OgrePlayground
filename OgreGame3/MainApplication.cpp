@@ -18,6 +18,7 @@ MainApplication::~MainApplication()
 
 bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
+	if (!mRTSController.CaptureRenderQueue(evt)) return false;
 	if (!OgreContext::frameRenderingQueued(evt)) return false;
 
 	mBulletContext.Update(evt.timeSinceLastFrame);
@@ -37,6 +38,7 @@ bool MainApplication::keyReleased(const OIS::KeyEvent& ke)
 
 bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 {
+	if (!mRTSController.CaptureMouseMoved(me)) return false;
 	if (!OgreContext::mouseMoved(me)) return false;
 	return true;
 }
@@ -53,11 +55,14 @@ bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonI
 	return true;
 }
 
-void MainApplication::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) const
+void MainApplication::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
 {
 	OgreContext::setupCamera(sceneMgr, camera);
-	camera->setPosition(0.0f, 80.0f, 100.0f);
-	camera->lookAt(0.0f, 0.0f, 0.0f);
+	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
+	cameraNode->attachObject(camera);
+	cameraNode->translate(0.0f, 90.0f, 100.0f);
+	cameraNode->lookAt(Ogre::Vector3(0.0f, 0.0f, 0.0f), Ogre::Node::TS_WORLD);
+	mRTSController.AttachCamera(cameraNode);
 }
 
 void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)

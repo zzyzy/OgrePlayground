@@ -176,7 +176,7 @@ bool OgreContext::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id
 	return true;
 }
 
-void OgreContext::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) const
+void OgreContext::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
 {
 	camera = sceneMgr->createCamera("MainCamera");
 	camera->setNearClipDistance(0.1f);
