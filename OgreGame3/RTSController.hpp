@@ -26,12 +26,14 @@ public:
 	bool CaptureMouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id);
 
 	// Frame rendering queue event
-	bool CaptureRenderQueue(const Ogre::FrameEvent& fe) const;
+	bool CaptureRenderQueue(const Ogre::FrameEvent& fe);
 
 private:
 	Ogre::SceneNode* mCamera;
+	Ogre::Real mBaseSpeed;
 	Ogre::Real mSpeed;
-	Ogre::Real mMouseSensitivity;
+	Ogre::Real mSensitivity;
+	bool mRMBHold;
 	std::pair<float, float> mMove;
 };
 

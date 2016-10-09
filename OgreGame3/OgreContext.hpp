@@ -50,6 +50,7 @@ public:
 	virtual ~OgreContext();
 
 	bool Setup();
+	OgreBites::SdkTrayManager* GetTrayMgr() const;
 
 protected:
 	// FrameListener overrides

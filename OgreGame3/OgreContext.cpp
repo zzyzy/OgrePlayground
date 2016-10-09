@@ -117,6 +117,11 @@ bool OgreContext::Setup()
 	return true;
 }
 
+OgreBites::SdkTrayManager* OgreContext::GetTrayMgr() const
+{
+	return mTrayMgr;
+}
+
 void OgreContext::windowResized(Ogre::RenderWindow* rw)
 {
 	int left, top;

@@ -45,13 +45,27 @@ bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 
 bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
+	if (id == OIS::MB_Right)
+	{
+		GetTrayMgr()->hideCursor();
+	}
+
+	if (!mRTSController.CaptureMousePressed(me, id)) return false;
 	if (!OgreContext::mousePressed(me, id)) return false;
+
 	return true;
 }
 
 bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
+	if (id == OIS::MB_Right)
+	{
+		GetTrayMgr()->showCursor();
+	}
+
+	if (!mRTSController.CaptureMouseReleased(me, id)) return false;
 	if (!OgreContext::mouseReleased(me, id)) return false;
+
 	return true;
 }
 

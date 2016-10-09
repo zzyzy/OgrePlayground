@@ -10,8 +10,10 @@
 
 RTSController::RTSController() :
 	mCamera(nullptr),
-	mSpeed(5.0f),
-	mMouseSensitivity(0.25f)
+	mBaseSpeed(50.0f),
+	mSpeed(mBaseSpeed),
+	mSensitivity(4.0f),
+	mRMBHold(false)
 {
 }
 
@@ -26,6 +28,13 @@ void RTSController::AttachCamera(Ogre::SceneNode* camera)
 
 bool RTSController::CaptureMouseMoved(const OIS::MouseEvent& me)
 {
+	if (mRMBHold)
+	{
+		mCamera->yaw(Ogre::Degree(-me.state.X.rel * 0.25f * mSpeed), Ogre::Node::TS_WORLD);
+		mCamera->pitch(Ogre::Degree(-me.state.Y.rel * 0.25f * mSpeed), Ogre::Node::TS_LOCAL);
+		return true;
+	}
+
 	if (me.state.X.abs == me.state.width)
 	{
 		mMove.first = mSpeed;
@@ -52,29 +61,49 @@ bool RTSController::CaptureMouseMoved(const OIS::MouseEvent& me)
 		mMove.second = 0.0f;
 	}
 
+	if (me.state.Z.rel != 0)
+	{
+		auto pos = mCamera->getPosition();
+		pos.y += -me.state.Z.rel * 0.25f * mSpeed;
+		mCamera->setPosition(pos);
+	}
+
 	return true;
 }
 
 bool RTSController::CaptureMousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
+	if (id == OIS::MB_Right)
+	{
+		mRMBHold = true;
+	}
+
 	return true;
 }
 
 bool RTSController::CaptureMouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
+	if (id == OIS::MB_Right)
+	{
+		mRMBHold = false;
+	}
+
 	return true;
 }
 
-bool RTSController::CaptureRenderQueue(const Ogre::FrameEvent& fe) const
+bool RTSController::CaptureRenderQueue(const Ogre::FrameEvent& fe)
 {
+	mSpeed = mBaseSpeed * mSensitivity * fe.timeSinceLastFrame;
+
 	if (mMove.first != 0.0f || mMove.second != 0.0f)
 	{
-		Ogre::Vector3 pos = mCamera->getPosition();
+		auto pos = mCamera->getPosition();
 
-		pos.x += mMove.first * mMouseSensitivity;
-		pos.z += mMove.second * mMouseSensitivity;
+		pos.x += mMove.first;
+		pos.z += mMove.second;
 
 		mCamera->setPosition(pos);
 	}
+
 	return true;
 }
