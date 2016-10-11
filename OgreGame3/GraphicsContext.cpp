@@ -1,5 +1,5 @@
 //
-// OgreGame3/OgreContext.cpp
+// OgreGame3/GraphicsContext.cpp
 // 
 // Author: Zhen Zhi Lee <leezhenzhi@gmail.com>
 //
