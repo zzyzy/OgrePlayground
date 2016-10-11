@@ -10,6 +10,8 @@
 
 MainApplication::MainApplication()
 {
+	mPhysicsContext.Setup();
+	mGraphicsContext.Setup(this, this, this, this, this);
 }
 
 MainApplication::~MainApplication()
@@ -19,10 +21,8 @@ MainApplication::~MainApplication()
 bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
 	mPhysicsContext.Update(evt.timeSinceLastFrame);
-
 	if (!mRTSController.CaptureRenderQueue(evt)) return false;
-	if (!GraphicsContext::frameRenderingQueued(evt)) return false;
-
+	if (!mGraphicsContext.CaptureRenderQueue(evt)) return false;
 	return true;
 }
 
@@ -40,33 +40,39 @@ bool MainApplication::keyReleased(const OIS::KeyEvent& ke)
 bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 {
 	if (!mRTSController.CaptureMouseMoved(me)) return false;
-	if (!GraphicsContext::mouseMoved(me)) return false;
+	if (!mGraphicsContext.CaptureMouseMoved(me)) return false;
 	return true;
 }
 
 bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
-	if (!mRTSController.CaptureMousePressed(me, id, GetTrayMgr())) return false;
-	if (!GraphicsContext::mousePressed(me, id)) return false;
+	if (!mRTSController.CaptureMousePressed(me, id, mGraphicsContext.GetTrayMgr())) return false;
+	if (!mGraphicsContext.CaptureMousePressed(me, id)) return false;
 	return true;
 }
 
 bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
-	if (!mRTSController.CaptureMouseReleased(me, id, GetTrayMgr())) return false;
-	if (!GraphicsContext::mouseReleased(me, id)) return false;
-
+	if (!mRTSController.CaptureMouseReleased(me, id, mGraphicsContext.GetTrayMgr())) return false;
+	if (!mGraphicsContext.CaptureMouseReleased(me, id)) return false;
 	return true;
 }
 
-void MainApplication::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
+void MainApplication::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera)
 {
-	GraphicsContext::SetupCamera(sceneMgr, camera);
 	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	cameraNode->attachObject(camera);
 	cameraNode->translate(0.0f, 90.0f, 100.0f);
 	cameraNode->lookAt(Ogre::Vector3(0.0f, 0.0f, 0.0f), Ogre::Node::TS_WORLD);
 	mRTSController.AttachCamera(cameraNode);
+}
+
+void MainApplication::SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera* camera)
+{
+}
+
+void MainApplication::SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager* trayMgr)
+{
 }
 
 void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr)
@@ -112,9 +118,4 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr)
 		transform.setOrigin(btVector3(0, -5, 0));
 		mPhysicsContext.CreateRigidBody(0.0f, transform, groundShape, groundNode);
 	}
-}
-
-void MainApplication::SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr)
-{
-	GraphicsContext::SetupTrayUI(sceneMgr, trayMgr);
 }

@@ -63,6 +63,9 @@
     <ClInclude Include="Utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IApplicationBehaviour.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

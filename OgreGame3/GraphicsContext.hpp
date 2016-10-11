@@ -30,40 +30,40 @@
 #ifndef __GRAPHICSCONTEXT_HPP__
 #define __GRAPHICSCONTEXT_HPP__
 
-class GraphicsContext :
-	public Ogre::WindowEventListener,
-	public Ogre::FrameListener,
-	public OIS::KeyListener,
-	public OIS::MouseListener,
-	public OgreBites::SdkTrayListener
+#include "IApplicationBehaviour.hpp"
+
+class GraphicsContext : public Ogre::WindowEventListener
 {
 public:
 	GraphicsContext();
-	virtual ~GraphicsContext();
+	~GraphicsContext();
 
-	bool Setup();
+	bool Setup(Ogre::FrameListener* frameListener,
+	           OIS::MouseListener* mouseListener,
+	           OIS::KeyListener* keyListener,
+	           OgreBites::SdkTrayListener* sdkTrayListener,
+	           IApplicationBehaviour* appBehaviour);
+
 	OgreBites::SdkTrayManager* GetTrayMgr() const;
 
-protected:
-	// FrameListener overrides
-	bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
+	// FrameListener
+	bool CaptureRenderQueue(const Ogre::FrameEvent& evt) const;
 
-	// MouseListener overrides
-	bool mouseMoved(const OIS::MouseEvent& me) override;
-	bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
-	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
-
-	// Allow application specific overrides
-	virtual void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera);
-	virtual void SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const;
-	virtual void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr);
-
-	virtual void SetupScene(Ogre::SceneManager* const sceneMgr) = 0;
+	// MouseListener
+	bool CaptureMouseMoved(const OIS::MouseEvent& me) const;
+	bool CaptureMousePressed(const OIS::MouseEvent& me, const OIS::MouseButtonID& id) const;
+	bool CaptureMouseReleased(const OIS::MouseEvent& me, const OIS::MouseButtonID& id) const;
 
 private:
 	// WindowEventListener overrides
 	void windowResized(Ogre::RenderWindow* rw) final override;
 	void windowClosed(Ogre::RenderWindow* rw) final override;
+
+	// Part of the setup sequence
+	void setupCamera();
+	void setupViewport();
+	void setupTrayUI();
+	void setupScene();
 
 	// Ogre
 	Ogre::Root* mRoot;
@@ -82,6 +82,9 @@ private:
 	// OgreBites
 	OgreBites::InputContext mInputContext;
 	OgreBites::SdkTrayManager* mTrayMgr;
+
+	// Overrides (application specific behaviours)
+	IApplicationBehaviour* mAppBehaviour;
 };
 
 #endif // #ifndef __GRAPHICSCONTEXT_HPP__

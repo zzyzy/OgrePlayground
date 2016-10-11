@@ -19,30 +19,37 @@
 #include "PhysicsContext.hpp"
 #include "RTSController.hpp"
 
-class MainApplication : public GraphicsContext
+class MainApplication :
+	public Ogre::FrameListener,
+	public OIS::KeyListener,
+	public OIS::MouseListener,
+	public OgreBites::SdkTrayListener,
+	public IApplicationBehaviour
 {
 public:
 	MainApplication();
 	~MainApplication();
 
 private:
-	// FrameListener overrides
+	// FrameListener
 	bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
 
-	// KeyListener overrides
+	// KeyListener
 	bool keyPressed(const OIS::KeyEvent& ke) override;
 	bool keyReleased(const OIS::KeyEvent& ke) override;
 
-	// MouseListener overrides
+	// MouseListener
 	bool mouseMoved(const OIS::MouseEvent& me) override;
 	bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 
-	void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) override;
-	void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr) override;
-
+	// Application specific behaviours
+	void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera) override;
+	void SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera* camera) override;
+	void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager* trayMgr) override;
 	void SetupScene(Ogre::SceneManager* const sceneMgr) override;
 
+	GraphicsContext mGraphicsContext;
 	PhysicsContext mPhysicsContext;
 	RTSController mRTSController;
 };

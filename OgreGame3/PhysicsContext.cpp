@@ -15,7 +15,7 @@ PhysicsContext::PhysicsContext() :
 	mSolver(nullptr),
 	mDynamicsWorld(nullptr)
 {
-	Setup();
+	//Setup();
 }
 
 PhysicsContext::~PhysicsContext()

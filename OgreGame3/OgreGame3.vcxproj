@@ -85,6 +85,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="IApplicationBehaviour.hpp" />
     <ClInclude Include="PhysicsContext.hpp" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="Graph.h" />
