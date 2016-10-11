@@ -18,6 +18,7 @@
 #include "GraphicsContext.hpp"
 #include "PhysicsContext.hpp"
 #include "RTSController.hpp"
+#include "ObjectSelector.hpp"
 
 class MainApplication :
 	public Ogre::FrameListener,
@@ -52,6 +53,7 @@ private:
 	GraphicsContext mGraphicsContext;
 	PhysicsContext mPhysicsContext;
 	RTSController mRTSController;
+	ObjectSelector mObjectSelector;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

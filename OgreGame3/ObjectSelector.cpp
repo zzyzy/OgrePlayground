@@ -55,13 +55,9 @@ ObjectSelector::ObjectSelector(Ogre::SceneManager* sceneMgr, Ogre::Camera* camer
 	mCamera(camera),
 	mSelectionBox(nullptr),
 	mSelecting(false),
-	mModifySelection(false),
-	mRaySceneQuery(nullptr),
-	mVolQuery(nullptr)
+	mModifySelection(false)
 {
 	mSelectionBox = OGRE_NEW SelectionBox("SelectionBox");
-	mRaySceneQuery = mSceneMgr->createRayQuery(Ogre::Ray());
-	mVolQuery = mSceneMgr->createPlaneBoundedVolumeQuery(Ogre::PlaneBoundedVolumeList());
 	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(mSelectionBox);
 }
 
@@ -70,17 +66,29 @@ ObjectSelector::ObjectSelector() :
 	mCamera(nullptr),
 	mSelectionBox(nullptr),
 	mSelecting(false),
-	mModifySelection(false),
-	mRaySceneQuery(nullptr),
-	mVolQuery(nullptr)
+	mModifySelection(false)
 {
-	
+}
+
+ObjectSelector::ObjectSelector(const ObjectSelector& objectSelector) :
+	mSceneMgr(objectSelector.mSceneMgr),
+	mCamera(objectSelector.mCamera),
+	mSelectionBox(objectSelector.mSelectionBox),
+	mSelecting(objectSelector.mSelecting),
+	mModifySelection(objectSelector.mModifySelection)
+{
 }
 
 ObjectSelector::~ObjectSelector()
 {
-	mSceneMgr->destroyQuery(mRaySceneQuery);
-	mSceneMgr->destroyQuery(mVolQuery);
+}
+
+void ObjectSelector::Setup(Ogre::SceneManager* sceneMgr, Ogre::Camera* camera)
+{
+	mSceneMgr = sceneMgr;
+	mCamera = camera;
+	mSelectionBox = OGRE_NEW SelectionBox("SelectionBox");
+	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(mSelectionBox);
 }
 
 bool ObjectSelector::CaptureKeyPressed(const OIS::KeyEvent& ke)
@@ -192,17 +200,18 @@ bool ObjectSelector::IsSelectionBoxLargeEnough(const Ogre::Vector2& first, const
 }
 
 void ObjectSelector::SelectObject(const OIS::MouseEvent& me, const bool& modifySelection,
-	std::set<MovableObject*>& selectedObjects)
+                                  std::set<MovableObject*>& selectedObjects)
 {
 	Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(
 		static_cast<float>(me.state.X.abs) / me.state.width,
 		static_cast<float>(me.state.Y.abs) / me.state.height);
 
-	mRaySceneQuery->setRay(mouseRay);
-	mRaySceneQuery->setSortByDistance(true);
-	mRaySceneQuery->setQueryMask(ROBOT_MASK);
+	auto raySceneQuery = mSceneMgr->createRayQuery(Ogre::Ray());
+	raySceneQuery->setRay(mouseRay);
+	raySceneQuery->setSortByDistance(true);
+	raySceneQuery->setQueryMask(ROBOT_MASK);
 
-	Ogre::RaySceneQueryResult& result = mRaySceneQuery->execute();
+	Ogre::RaySceneQueryResult& result = raySceneQuery->execute();
 	Ogre::RaySceneQueryResult::iterator itr = result.begin();
 
 	if (!modifySelection)
@@ -236,14 +245,17 @@ void ObjectSelector::SelectObject(const OIS::MouseEvent& me, const bool& modifyS
 			}
 		}
 	}
+
+	mSceneMgr->destroyQuery(raySceneQuery);
 }
 
 void ObjectSelector::SelectObjects(const Ogre::Vector2& first, const Ogre::Vector2& second, const bool& modifySelection,
-	std::set<MovableObject*>& selectedObjects)
+                                   std::set<MovableObject*>& selectedObjects)
 {
+	auto volQuery = mSceneMgr->createPlaneBoundedVolumeQuery(Ogre::PlaneBoundedVolumeList());
 	float left = first.x, right = second.x;
 	float top = first.y, bottom = second.y;
-	mVolQuery->setQueryMask(ROBOT_MASK);
+	volQuery->setQueryMask(ROBOT_MASK);
 
 	if (left > right)
 	{
@@ -301,8 +313,8 @@ void ObjectSelector::SelectObjects(const Ogre::Vector2& first, const Ogre::Vecto
 	Ogre::PlaneBoundedVolumeList volList;
 	volList.push_back(vol);
 
-	mVolQuery->setVolumes(volList);
-	Ogre::SceneQueryResult result = mVolQuery->execute();
+	volQuery->setVolumes(volList);
+	Ogre::SceneQueryResult result = volQuery->execute();
 
 	if (!modifySelection)
 	{
@@ -321,6 +333,8 @@ void ObjectSelector::SelectObjects(const Ogre::Vector2& first, const Ogre::Vecto
 		selectedObject->ShowDecal();
 		selectedObjects.insert(selectedObject);
 	}
+
+	mSceneMgr->destroyQuery(volQuery);
 }
 
 bool ObjectSelector::HasSelection() const

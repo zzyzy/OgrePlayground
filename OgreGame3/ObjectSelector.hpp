@@ -43,7 +43,10 @@ class ObjectSelector
 public:
 	ObjectSelector(Ogre::SceneManager* sceneMgr, Ogre::Camera* camera);
 	ObjectSelector();
+	ObjectSelector(const ObjectSelector& objectSelector);
 	~ObjectSelector();
+
+	void Setup(Ogre::SceneManager* sceneMgr, Ogre::Camera* camera);
 
 	// Key events
 	bool CaptureKeyPressed(const OIS::KeyEvent& ke);
@@ -75,8 +78,6 @@ private:
 	Ogre::Vector2 mStartLoc;								// Selection box top left x y coords
 	Ogre::Vector2 mEndLoc;									// Selection box bottom right x y coords
 	std::set<MovableObject*> mSelectedObjects;				// Set of selected objects
-	Ogre::RaySceneQuery* mRaySceneQuery;					// Raycasting scene query
-	Ogre::PlaneBoundedVolumeListSceneQuery* mVolQuery;		// Volumetric scene query
 };
 
 #endif // __OBJECTSELECTOR_HPP__

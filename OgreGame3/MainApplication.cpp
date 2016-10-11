@@ -28,18 +28,21 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 {
+	if (!mObjectSelector.CaptureKeyPressed(ke)) return false;
 	return true;
 }
 
 bool MainApplication::keyReleased(const OIS::KeyEvent& ke)
 {
 	if (!mRTSController.CaptureKeyReleased(ke)) return false;
+	if (!mObjectSelector.CaptureKeyReleased(ke)) return false;
 	return true;
 }
 
 bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 {
 	if (!mRTSController.CaptureMouseMoved(me)) return false;
+	if (!mObjectSelector.CaptureMouseMoved(me)) return false;
 	if (!mGraphicsContext.CaptureMouseMoved(me)) return false;
 	return true;
 }
@@ -47,6 +50,7 @@ bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
 	if (!mRTSController.CaptureMousePressed(me, id, mGraphicsContext.GetTrayMgr())) return false;
+	if (!mObjectSelector.CaptureMousePressed(me, id)) return false;
 	if (!mGraphicsContext.CaptureMousePressed(me, id)) return false;
 	return true;
 }
@@ -54,6 +58,7 @@ bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID
 bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
 	if (!mRTSController.CaptureMouseReleased(me, id, mGraphicsContext.GetTrayMgr())) return false;
+	if (!mObjectSelector.CaptureMouseReleased(me, id)) return false;
 	if (!mGraphicsContext.CaptureMouseReleased(me, id)) return false;
 	return true;
 }
@@ -62,9 +67,10 @@ void MainApplication::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Came
 {
 	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	cameraNode->attachObject(camera);
-	cameraNode->translate(0.0f, 90.0f, 100.0f);
+	cameraNode->translate(0.0f, 100.0f, 0.0f);
 	cameraNode->lookAt(Ogre::Vector3(0.0f, 0.0f, 0.0f), Ogre::Node::TS_WORLD);
 	mRTSController.AttachCamera(cameraNode);
+	mObjectSelector.Setup(sceneMgr, camera);
 }
 
 void MainApplication::SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera* camera)
@@ -78,11 +84,11 @@ void MainApplication::SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites:
 void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr)
 {
 	sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
-
 	sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 
 	auto* light = sceneMgr->createLight("MainLight");
 	light->setPosition(0, 0, 0);
+	light->setQueryFlags(0);
 
 	// Setup ground, walls and ceiling (room)
 	{
@@ -103,9 +109,10 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr)
 		// Ground
 		auto* groundEntity = sceneMgr->createEntity("plane");
 		groundEntity->setCastShadows(false);
+		groundEntity->setQueryFlags(ENVIRONMENT_MASK);
+		groundEntity->setMaterialName("Examples/GrassFloor");
 		auto* groundNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 		groundNode->attachObject(groundEntity);
-		groundEntity->setMaterialName("Examples/GrassFloor");
 
 		// Setup rigidbodies
 		btTransform transform;
