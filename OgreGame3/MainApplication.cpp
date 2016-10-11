@@ -59,9 +59,9 @@ bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonI
 	return true;
 }
 
-void MainApplication::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
+void MainApplication::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
 {
-	GraphicsContext::setupCamera(sceneMgr, camera);
+	GraphicsContext::SetupCamera(sceneMgr, camera);
 	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	cameraNode->attachObject(camera);
 	cameraNode->translate(0.0f, 90.0f, 100.0f);
@@ -69,7 +69,7 @@ void MainApplication::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Came
 	mRTSController.AttachCamera(cameraNode);
 }
 
-void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
+void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr)
 {
 	sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 
@@ -114,7 +114,7 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 	}
 }
 
-void MainApplication::setupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr)
+void MainApplication::SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr)
 {
-	GraphicsContext::setupTrayUI(sceneMgr, trayMgr);
+	GraphicsContext::SetupTrayUI(sceneMgr, trayMgr);
 }

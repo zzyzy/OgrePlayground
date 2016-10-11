@@ -25,12 +25,12 @@ GraphicsContext::GraphicsContext() :
 
 GraphicsContext::~GraphicsContext()
 {
-	if (mTrayMgr) delete mTrayMgr;
-	if (mOverlaySystem) delete mOverlaySystem;
-
 	Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
 	WindowEventListener::windowClosed(mWindow);
-	delete mRoot;
+
+	if (mTrayMgr) delete mTrayMgr;
+	if (mOverlaySystem) delete mOverlaySystem;
+	if (mRoot) delete mRoot;
 }
 
 bool GraphicsContext::Setup()
@@ -78,9 +78,9 @@ bool GraphicsContext::Setup()
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	setupCamera(mSceneMgr, mCamera);
-	setupViewport(mWindow, mCamera);
-	setupScene(mSceneMgr);
+	SetupCamera(mSceneMgr, mCamera);
+	SetupViewport(mWindow, mCamera);
+	SetupScene(mSceneMgr);
 
 	// OIS
 	Ogre::LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
@@ -106,7 +106,7 @@ bool GraphicsContext::Setup()
 	mInputContext.mKeyboard = mKeyboard;
 	mInputContext.mMouse = mMouse;
 
-	setupTrayUI(mSceneMgr, mTrayMgr);
+	SetupTrayUI(mSceneMgr, mTrayMgr);
 
 	mRoot->addFrameListener(this);
 	mMouse->setEventCallback(this);
@@ -165,29 +165,29 @@ bool GraphicsContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 bool GraphicsContext::mouseMoved(const OIS::MouseEvent& me)
 {
-	if (!mTrayMgr->injectMouseMove(me)) return false;
+	mTrayMgr->injectMouseMove(me);
 	return true;
 }
 
 bool GraphicsContext::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
-	if (!mTrayMgr->injectMouseDown(me, id)) return false;
+	mTrayMgr->injectMouseDown(me, id);
 	return true;
 }
 
 bool GraphicsContext::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
-	if (!mTrayMgr->injectMouseUp(me, id)) return false;
+	mTrayMgr->injectMouseUp(me, id);
 	return true;
 }
 
-void GraphicsContext::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
+void GraphicsContext::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
 {
 	camera = sceneMgr->createCamera("MainCamera");
 	camera->setNearClipDistance(0.1f);
 }
 
-void GraphicsContext::setupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const
+void GraphicsContext::SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const
 {
 	Ogre::Viewport* vp = window->addViewport(camera);
 	vp->setBackgroundColour(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
@@ -198,7 +198,7 @@ void GraphicsContext::setupViewport(Ogre::RenderWindow* const window, Ogre::Came
 	);
 }
 
-void GraphicsContext::setupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr)
+void GraphicsContext::SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr)
 {
 	trayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mInputContext, this);
 	trayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);

@@ -54,11 +54,11 @@ protected:
 	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 
 	// Allow application specific overrides
-	virtual void setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera);
-	virtual void setupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const;
-	virtual void setupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr);
+	virtual void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera);
+	virtual void SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const;
+	virtual void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr);
 
-	virtual void setupScene(Ogre::SceneManager* const sceneMgr) = 0;
+	virtual void SetupScene(Ogre::SceneManager* const sceneMgr) = 0;
 
 private:
 	// WindowEventListener overrides

@@ -38,10 +38,10 @@ private:
 	bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 
-	void setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) override;
-	void setupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr) override;
+	void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera) override;
+	void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr) override;
 
-	void setupScene(Ogre::SceneManager* const sceneMgr) override;
+	void SetupScene(Ogre::SceneManager* const sceneMgr) override;
 
 	PhysicsContext mPhysicsContext;
 	RTSController mRTSController;
