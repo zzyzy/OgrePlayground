@@ -1,14 +1,14 @@
 //
-// OgreGame3/BulletContext.cpp
+// OgreGame3/PhysicsContext.cpp
 //
 // Author: Zhen Zhi Lee <leezhenzhi@gmail.com>
 //
 // Copyright (C) 2016 Zhen Zhi Lee.
 //
 
-#include "BulletContext.hpp"
+#include "PhysicsContext.hpp"
 
-BulletContext::BulletContext() :
+PhysicsContext::PhysicsContext() :
 	mCollisionConfiguration(nullptr),
 	mDispatcher(nullptr),
 	mBroadphase(nullptr),
@@ -18,12 +18,12 @@ BulletContext::BulletContext() :
 	Setup();
 }
 
-BulletContext::~BulletContext()
+PhysicsContext::~PhysicsContext()
 {
 	Teardown();
 }
 
-void BulletContext::Setup()
+void PhysicsContext::Setup()
 {
 	// Collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
 	mCollisionConfiguration = new btDefaultCollisionConfiguration();
@@ -47,7 +47,7 @@ void BulletContext::Setup()
 	mBroadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback);
 }
 
-void BulletContext::Teardown()
+void PhysicsContext::Teardown()
 {
 	// Cleanup in the reverse order of creation/initialization
 	// Remove the rigidbodies from the dynamics world and delete them
@@ -86,13 +86,13 @@ void BulletContext::Teardown()
 	mCollisionConfiguration = nullptr;
 }
 
-void BulletContext::Update(const float& deltaTime) const
+void PhysicsContext::Update(const float& deltaTime) const
 {
 	// Simulate dynamics
 	mDynamicsWorld->stepSimulation(deltaTime);
 }
 
-btRigidBody* BulletContext::CreateRigidBody(const float& mass, const btTransform& startTrans, btCollisionShape* collisionShape, Ogre::SceneNode* node)
+btRigidBody* PhysicsContext::CreateRigidBody(const float& mass, const btTransform& startTrans, btCollisionShape* collisionShape, Ogre::SceneNode* node)
 {
 	// Check validity of collision shape
 	//btAssert((!collisionShape || collisionShape->getShapeType() != INVALID_SHAPE_PROXYTYPE));
@@ -121,7 +121,7 @@ btRigidBody* BulletContext::CreateRigidBody(const float& mass, const btTransform
 	return rigidBody;
 }
 
-void BulletContext::DestroyRigidBody(btRigidBody* rigidBody)
+void PhysicsContext::DestroyRigidBody(btRigidBody* rigidBody)
 {
 	// Get the collision shape
 	auto shape = rigidBody->getCollisionShape();
@@ -139,7 +139,7 @@ void BulletContext::DestroyRigidBody(btRigidBody* rigidBody)
 	delete rigidBody;
 }
 
-btPairCachingGhostObject* BulletContext::CreateGhostObject(const btTransform& startTrans,
+btPairCachingGhostObject* PhysicsContext::CreateGhostObject(const btTransform& startTrans,
                                                            btCollisionShape* collisionShape,
                                                            btBroadphaseProxy::CollisionFilterGroups filterGroup,
                                                            btBroadphaseProxy::CollisionFilterGroups filterMask)
@@ -152,7 +152,7 @@ btPairCachingGhostObject* BulletContext::CreateGhostObject(const btTransform& st
 	return ghostObject;
 }
 
-void BulletContext::DestroyGhostObject(btPairCachingGhostObject* ghostObject)
+void PhysicsContext::DestroyGhostObject(btPairCachingGhostObject* ghostObject)
 {
 	// Get the collision shape
 	auto shape = ghostObject->getCollisionShape();
@@ -167,7 +167,7 @@ void BulletContext::DestroyGhostObject(btPairCachingGhostObject* ghostObject)
 	delete ghostObject;
 }
 
-btCollisionObject* BulletContext::GetCollidedObject(btCollisionObject* object) const
+btCollisionObject* PhysicsContext::GetCollidedObject(btCollisionObject* object) const
 {
 	const auto numManifolds = mDynamicsWorld->getDispatcher()->getNumManifolds();
 	for (auto i = 0; i < numManifolds; ++i)
@@ -197,7 +197,7 @@ btCollisionObject* BulletContext::GetCollidedObject(btCollisionObject* object) c
 	return nullptr;
 }
 
-std::set<btCollisionObject*> BulletContext::GetAllCollidedObjects(btCollisionObject* object) const
+std::set<btCollisionObject*> PhysicsContext::GetAllCollidedObjects(btCollisionObject* object) const
 {
 	std::set<btCollisionObject*> collidedObjects;
 
@@ -229,7 +229,7 @@ std::set<btCollisionObject*> BulletContext::GetAllCollidedObjects(btCollisionObj
 	return collidedObjects;
 }
 
-std::set<btCollisionObject*> BulletContext::GetAllCollidedObjects(btPairCachingGhostObject* object) const
+std::set<btCollisionObject*> PhysicsContext::GetAllCollidedObjects(btPairCachingGhostObject* object) const
 {
 	std::set<btCollisionObject*> collidedObjects;
 	btManifoldArray manifoldArray;
@@ -277,7 +277,7 @@ std::set<btCollisionObject*> BulletContext::GetAllCollidedObjects(btPairCachingG
 	return collidedObjects;
 }
 
-void BulletContext::ShootRay(const btVector3& rayFromWorld, const btVector3& rayToWorld, const btVector3& impulse) const
+void PhysicsContext::ShootRay(const btVector3& rayFromWorld, const btVector3& rayToWorld, const btVector3& impulse) const
 {
 	// Create a closest ray result callback
 	btCollisionWorld::ClosestRayResultCallback rayCallback(rayFromWorld, rayToWorld);

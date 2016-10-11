@@ -30,13 +30,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BulletContext.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MainApplication.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OgreContext.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RTSController.hpp">
@@ -60,6 +54,12 @@
     <ClInclude Include="PathFinding.h">
       <Filter>Header Files\AI Layer</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsContext.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsContext.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -68,13 +68,7 @@
     <ClCompile Include="Program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BulletContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MainApplication.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OgreContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RTSController.cpp">
@@ -97,6 +91,12 @@
     </ClCompile>
     <ClCompile Include="PathFinding.cpp">
       <Filter>Source Files\AI Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsContext.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -18,10 +18,10 @@ MainApplication::~MainApplication()
 
 bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-	mBulletContext.Update(evt.timeSinceLastFrame);
+	mPhysicsContext.Update(evt.timeSinceLastFrame);
 
 	if (!mRTSController.CaptureRenderQueue(evt)) return false;
-	if (!OgreContext::frameRenderingQueued(evt)) return false;
+	if (!GraphicsContext::frameRenderingQueued(evt)) return false;
 
 	return true;
 }
@@ -40,28 +40,28 @@ bool MainApplication::keyReleased(const OIS::KeyEvent& ke)
 bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 {
 	if (!mRTSController.CaptureMouseMoved(me)) return false;
-	if (!OgreContext::mouseMoved(me)) return false;
+	if (!GraphicsContext::mouseMoved(me)) return false;
 	return true;
 }
 
 bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
 	if (!mRTSController.CaptureMousePressed(me, id, GetTrayMgr())) return false;
-	if (!OgreContext::mousePressed(me, id)) return false;
+	if (!GraphicsContext::mousePressed(me, id)) return false;
 	return true;
 }
 
 bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
 	if (!mRTSController.CaptureMouseReleased(me, id, GetTrayMgr())) return false;
-	if (!OgreContext::mouseReleased(me, id)) return false;
+	if (!GraphicsContext::mouseReleased(me, id)) return false;
 
 	return true;
 }
 
 void MainApplication::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
 {
-	OgreContext::setupCamera(sceneMgr, camera);
+	GraphicsContext::setupCamera(sceneMgr, camera);
 	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	cameraNode->attachObject(camera);
 	cameraNode->translate(0.0f, 90.0f, 100.0f);
@@ -110,11 +110,11 @@ void MainApplication::setupScene(Ogre::SceneManager* const sceneMgr)
 		btBoxShape* groundShape = new btBoxShape(btVector3(50.0f, 5.0f, 50.0f));
 		transform.setIdentity();
 		transform.setOrigin(btVector3(0, -5, 0));
-		mBulletContext.CreateRigidBody(0.0f, transform, groundShape, groundNode);
+		mPhysicsContext.CreateRigidBody(0.0f, transform, groundShape, groundNode);
 	}
 }
 
 void MainApplication::setupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr)
 {
-	OgreContext::setupTrayUI(sceneMgr, trayMgr);
+	GraphicsContext::setupTrayUI(sceneMgr, trayMgr);
 }

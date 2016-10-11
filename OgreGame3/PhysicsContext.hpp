@@ -9,8 +9,8 @@
 //
 
 #pragma once
-#ifndef __BULLETCONTEXT_HPP__
-#define __BULLETCONTEXT_HPP__
+#ifndef __PHYSICSCONTEXT_HPP__
+#define __PHYSICSCONTEXT_HPP__
 
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
@@ -34,7 +34,7 @@ inline Ogre::Quaternion convert(const btQuaternion& Q)
 	return Ogre::Quaternion(Q.w(), Q.x(), Q.y(), Q.z());
 }
 
-class BulletContext
+class PhysicsContext
 {
 public:
 	class MotionState : public btMotionState
@@ -75,8 +75,8 @@ public:
 		Ogre::SceneNode* mSubject;
 	};
 
-	BulletContext();
-	~BulletContext();
+	PhysicsContext();
+	~PhysicsContext();
 
 	// Basic lifecycle
 	void Setup();
@@ -88,7 +88,7 @@ public:
 	void DestroyRigidBody(btRigidBody* rigidBody);
 
 	// GhostObject
-	btPairCachingGhostObject* BulletContext::CreateGhostObject(const btTransform& startTrans,
+	btPairCachingGhostObject* PhysicsContext::CreateGhostObject(const btTransform& startTrans,
 	                                                           btCollisionShape* collisionShape,
 	                                                           btBroadphaseProxy::CollisionFilterGroups filterGroup = btBroadphaseProxy::AllFilter,
 	                                                           btBroadphaseProxy::CollisionFilterGroups filterMask = btBroadphaseProxy::AllFilter);
@@ -114,4 +114,4 @@ private:
 	btDiscreteDynamicsWorld* mDynamicsWorld;
 };
 
-#endif // #ifndef __BULLETCONTEXT_HPP__
+#endif // #ifndef __PHYSICSCONTEXT_HPP__

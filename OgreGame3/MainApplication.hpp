@@ -2,7 +2,7 @@
 // OgreGame3/MainApplication.hpp
 // 
 // Class that contains application specific members and
-// methods. It inherits from OgreContext which implements
+// methods. It inherits from GraphicsContext which implements
 // most of the Ogre specific operations but are common to
 // all applications using Ogre.
 //
@@ -15,11 +15,11 @@
 #ifndef __MAINAPPLICATION_HPP__
 #define __MAINAPPLICATION_HPP__
 
-#include "OgreContext.hpp"
-#include "BulletContext.hpp"
+#include "GraphicsContext.hpp"
+#include "PhysicsContext.hpp"
 #include "RTSController.hpp"
 
-class MainApplication : public OgreContext
+class MainApplication : public GraphicsContext
 {
 public:
 	MainApplication();
@@ -43,7 +43,7 @@ private:
 
 	void setupScene(Ogre::SceneManager* const sceneMgr) override;
 
-	BulletContext mBulletContext;
+	PhysicsContext mPhysicsContext;
 	RTSController mRTSController;
 };
 

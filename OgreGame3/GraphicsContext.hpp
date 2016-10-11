@@ -1,5 +1,5 @@
 //
-// OgreGame3/OgreContext.hpp
+// OgreGame3/GraphicsContext.hpp
 // 
 // This class contains all the common Ogre operations and
 // behaviours. It should be subclassed by another class for
@@ -27,8 +27,8 @@
 //
 
 #pragma once
-#ifndef __OGRECONTEXT_HPP__
-#define __OGRECONTEXT_HPP__
+#ifndef __GRAPHICSCONTEXT_HPP__
+#define __GRAPHICSCONTEXT_HPP__
 
 #include <OgreRoot.h>
 #include <OgreWindowEventUtilities.h>
@@ -38,7 +38,7 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-class OgreContext :
+class GraphicsContext :
 	public Ogre::WindowEventListener,
 	public Ogre::FrameListener,
 	public OIS::KeyListener,
@@ -46,8 +46,8 @@ class OgreContext :
 	public OgreBites::SdkTrayListener
 {
 public:
-	OgreContext();
-	virtual ~OgreContext();
+	GraphicsContext();
+	virtual ~GraphicsContext();
 
 	bool Setup();
 	OgreBites::SdkTrayManager* GetTrayMgr() const;
@@ -92,4 +92,4 @@ private:
 	OgreBites::SdkTrayManager* mTrayMgr;
 };
 
-#endif // #ifndef __OGRECONTEXT_HPP__
+#endif // #ifndef __GRAPHICSCONTEXT_HPP__

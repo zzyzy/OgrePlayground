@@ -6,9 +6,9 @@
 // Copyright (C) 2016 Zhen Zhi Lee.
 //
 
-#include "OgreContext.hpp"
+#include "GraphicsContext.hpp"
 
-OgreContext::OgreContext() :
+GraphicsContext::GraphicsContext() :
 	mRoot(nullptr),
 	mResourcesCfg(Ogre::StringUtil::BLANK),
 	mPluginsCfg(Ogre::StringUtil::BLANK),
@@ -23,7 +23,7 @@ OgreContext::OgreContext() :
 {
 }
 
-OgreContext::~OgreContext()
+GraphicsContext::~GraphicsContext()
 {
 	if (mTrayMgr) delete mTrayMgr;
 	if (mOverlaySystem) delete mOverlaySystem;
@@ -33,7 +33,7 @@ OgreContext::~OgreContext()
 	delete mRoot;
 }
 
-bool OgreContext::Setup()
+bool GraphicsContext::Setup()
 {
 #ifdef _DEBUG
 	mResourcesCfg = "resources_d.cfg";
@@ -117,12 +117,12 @@ bool OgreContext::Setup()
 	return true;
 }
 
-OgreBites::SdkTrayManager* OgreContext::GetTrayMgr() const
+OgreBites::SdkTrayManager* GraphicsContext::GetTrayMgr() const
 {
 	return mTrayMgr;
 }
 
-void OgreContext::windowResized(Ogre::RenderWindow* rw)
+void GraphicsContext::windowResized(Ogre::RenderWindow* rw)
 {
 	int left, top;
 	unsigned int width, height, depth;
@@ -134,7 +134,7 @@ void OgreContext::windowResized(Ogre::RenderWindow* rw)
 	ms.height = height;
 }
 
-void OgreContext::windowClosed(Ogre::RenderWindow* rw)
+void GraphicsContext::windowClosed(Ogre::RenderWindow* rw)
 {
 	if (rw == mWindow)
 	{
@@ -149,7 +149,7 @@ void OgreContext::windowClosed(Ogre::RenderWindow* rw)
 	}
 }
 
-bool OgreContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool GraphicsContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
 	if (mWindow->isClosed()) return false;
 
@@ -163,31 +163,31 @@ bool OgreContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	return true;
 }
 
-bool OgreContext::mouseMoved(const OIS::MouseEvent& me)
+bool GraphicsContext::mouseMoved(const OIS::MouseEvent& me)
 {
 	if (!mTrayMgr->injectMouseMove(me)) return false;
 	return true;
 }
 
-bool OgreContext::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
+bool GraphicsContext::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
 	if (!mTrayMgr->injectMouseDown(me, id)) return false;
 	return true;
 }
 
-bool OgreContext::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
+bool GraphicsContext::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
 	if (!mTrayMgr->injectMouseUp(me, id)) return false;
 	return true;
 }
 
-void OgreContext::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
+void GraphicsContext::setupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera*& camera)
 {
 	camera = sceneMgr->createCamera("MainCamera");
 	camera->setNearClipDistance(0.1f);
 }
 
-void OgreContext::setupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const
+void GraphicsContext::setupViewport(Ogre::RenderWindow* const window, Ogre::Camera*& camera) const
 {
 	Ogre::Viewport* vp = window->addViewport(camera);
 	vp->setBackgroundColour(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
@@ -198,7 +198,7 @@ void OgreContext::setupViewport(Ogre::RenderWindow* const window, Ogre::Camera*&
 	);
 }
 
-void OgreContext::setupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr)
+void GraphicsContext::setupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager*& trayMgr)
 {
 	trayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mInputContext, this);
 	trayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
