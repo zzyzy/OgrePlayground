@@ -22,6 +22,7 @@
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
 #include <OgreMeshManager.h>
+#include <OgreWindowEventUtilities.h>
 
 #include <OISEvents.h>
 #include <OISInputManager.h>
@@ -32,3 +33,4 @@
 
 // Bullet
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>

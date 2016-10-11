@@ -50,9 +50,6 @@ public:
 	// This should be called every frame
 	void SeekTarget(Graph* graph, PathFinding& pathFinder);
 
-	// This should probably be in a quaternion utilities class
-	Ogre::Quaternion LookRotation(Ogre::Vector3 forward, Ogre::Vector3 up);
-
 	// This should be called every frame
 	void Update(const float& minDistance, const float& deltaTime);
 

@@ -7,7 +7,7 @@
 //
 
 #include "MovableObject.hpp"
-#include "BulletContext.hpp"
+#include "Utilities.hpp"
 
 MovableObject::MovableObject(Ogre::SceneManager* creator,
                              const Ogre::Real& moveSpeed,
@@ -155,62 +155,6 @@ void MovableObject::SeekTarget(Graph* graph, PathFinding& pathFinder)
 	}
 }
 
-Ogre::Quaternion MovableObject::LookRotation(Ogre::Vector3 forward, Ogre::Vector3 up)
-{
-	forward = forward.normalisedCopy();
-	auto right = (up.crossProduct(forward)).normalisedCopy();
-	up = forward.crossProduct(right);
-	auto m00 = right.x;
-	auto m01 = right.y;
-	auto m02 = right.z;
-	auto m10 = up.x;
-	auto m11 = up.y;
-	auto m12 = up.z;
-	auto m20 = forward.x;
-	auto m21 = forward.y;
-	auto m22 = forward.z;
-
-	float num8 = (m00 + m11) + m22;
-	Ogre::Quaternion quaternion;
-	if (num8 > 0.0f)
-	{
-		auto num = static_cast<float>(sqrt(num8 + 1.0f));
-		quaternion.w = num * 0.5f;
-		num = 0.5f / num;
-		quaternion.x = (m12 - m21) * num;
-		quaternion.y = (m20 - m02) * num;
-		quaternion.z = ((m01 - m10) * num);
-		return quaternion;
-	}
-	if ((m00 >= m11) && (m00 >= m22))
-	{
-		auto num7 = static_cast<float>(sqrt(((1.0f + m00) - m11) - m22));
-		auto num4 = 0.5f / num7;
-		quaternion.x = 0.5f * num7;
-		quaternion.y = (m01 + m10) * num4;
-		quaternion.z = ((m02 + m20) * num4);
-		quaternion.w = (m12 - m21) * num4;
-		return quaternion;
-	}
-	if (m11 > m22)
-	{
-		auto num6 = static_cast<float>(sqrt(((1.0f + m11) - m00) - m22));
-		auto num3 = 0.5f / num6;
-		quaternion.x = (m10 + m01) * num3;
-		quaternion.y = 0.5f * num6;
-		quaternion.z = ((m21 + m12) * num3);
-		quaternion.w = (m20 - m02) * num3;
-		return quaternion;
-	}
-	auto num5 = static_cast<float>(sqrt(((1.0f + m22) - m00) - m11));
-	auto num2 = 0.5f / num5;
-	quaternion.x = (m20 + m02) * num2;
-	quaternion.y = (m21 + m12) * num2;
-	quaternion.z = (0.5f * num5);
-	quaternion.w = (m01 - m10) * num2;
-	return quaternion;
-}
-
 void MovableObject::Update(const float& minDistance, const float& deltaTime)
 {
 	if (mDirection == Ogre::Vector3::ZERO)
@@ -224,7 +168,7 @@ void MovableObject::Update(const float& minDistance, const float& deltaTime)
 	}
 	else
 	{
-		mDistance = (mDestination - convert(mRigidBody->getCenterOfMassPosition())).length();
+		mDistance = (mDestination - Convert(mRigidBody->getCenterOfMassPosition())).length();
 
 		if (mDistance <= minDistance)
 		{
@@ -242,7 +186,7 @@ void MovableObject::Update(const float& minDistance, const float& deltaTime)
 			{
 				auto quat = LookRotation(mDirection, Ogre::Vector3::UNIT_Y);
 				btTransform trans = mRigidBody->getCenterOfMassTransform();
-				trans.setRotation(convert(quat));
+				trans.setRotation(Convert(quat));
 				mRigidBody->setCenterOfMassTransform(trans);
 			}
 		}
@@ -250,13 +194,13 @@ void MovableObject::Update(const float& minDistance, const float& deltaTime)
 		{
 			mRigidBody->activate();
 			mRigidBody->applyCentralForce(Seek(mRigidBody->getCenterOfMassPosition(),
-			                                   convert(mDestination),
+			                                   Convert(mDestination),
 			                                   mMoveSpeed,
 			                                   mRigidBody->getLinearVelocity()));
 
 			auto quat = LookRotation(mDirection, Ogre::Vector3::UNIT_Y);
 			btTransform trans = mRigidBody->getCenterOfMassTransform();
-			trans.setRotation(convert(quat));
+			trans.setRotation(Convert(quat));
 			mRigidBody->setCenterOfMassTransform(trans);
 		}
 	}
@@ -271,7 +215,7 @@ bool MovableObject::nextLocation()
 	BuildPathVisualizer();
 	mDestination = mPath.front(); // this gets the front of the deque
 	mPath.pop_front(); // this removes the front of the deque
-	auto position = convert(mRigidBody->getCenterOfMassPosition());
+	auto position = Convert(mRigidBody->getCenterOfMassPosition());
 	mDestination.y = position.y;
 	mDirection = mDestination - position;
 	mDistance = mDirection.normalise();

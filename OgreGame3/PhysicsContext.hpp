@@ -1,5 +1,5 @@
 //
-// OgreGame3/BulletContext.hpp
+// OgreGame3/PhysicsContext.hpp
 // 
 // TODO Add description
 //
@@ -12,27 +12,7 @@
 #ifndef __PHYSICSCONTEXT_HPP__
 #define __PHYSICSCONTEXT_HPP__
 
-#include "BulletCollision/CollisionDispatch/btGhostObject.h"
-
-inline Ogre::Vector3 convert(const btVector3& vec3)
-{
-	return Ogre::Vector3(vec3.x(), vec3.y(), vec3.z());
-}
-
-inline btVector3 convert(const Ogre::Vector3& vec3)
-{
-	return btVector3(vec3.x, vec3.y, vec3.z);
-}
-
-inline btQuaternion convert(const Ogre::Quaternion& Q)
-{
-	return btQuaternion(Q.x, Q.y, Q.z, Q.w);
-}
-
-inline Ogre::Quaternion convert(const btQuaternion& Q)
-{
-	return Ogre::Quaternion(Q.w(), Q.x(), Q.y(), Q.z());
-}
+#include "Utilities.hpp"
 
 class PhysicsContext
 {
@@ -66,8 +46,8 @@ public:
 		{
 			auto rotation = worldTrans.getRotation();
 			auto position = worldTrans.getOrigin();
-			mSubject->setOrientation(convert(rotation));
-			mSubject->setPosition(convert(position));
+			mSubject->setOrientation(Convert(rotation));
+			mSubject->setPosition(Convert(position));
 		}
 
 	private:

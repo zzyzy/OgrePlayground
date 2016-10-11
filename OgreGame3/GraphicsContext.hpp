@@ -30,14 +30,6 @@
 #ifndef __GRAPHICSCONTEXT_HPP__
 #define __GRAPHICSCONTEXT_HPP__
 
-#include <OgreRoot.h>
-#include <OgreWindowEventUtilities.h>
-
-#include <OISEvents.h>
-#include <OISInputManager.h>
-#include <OISKeyboard.h>
-#include <OISMouse.h>
-
 class GraphicsContext :
 	public Ogre::WindowEventListener,
 	public Ogre::FrameListener,
