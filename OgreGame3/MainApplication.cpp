@@ -18,10 +18,10 @@ MainApplication::~MainApplication()
 
 bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
+	mBulletContext.Update(evt.timeSinceLastFrame);
+
 	if (!mRTSController.CaptureRenderQueue(evt)) return false;
 	if (!OgreContext::frameRenderingQueued(evt)) return false;
-
-	mBulletContext.Update(evt.timeSinceLastFrame);
 
 	return true;
 }
@@ -33,6 +33,7 @@ bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 
 bool MainApplication::keyReleased(const OIS::KeyEvent& ke)
 {
+	if (!mRTSController.CaptureKeyReleased(ke)) return false;
 	return true;
 }
 
@@ -45,25 +46,14 @@ bool MainApplication::mouseMoved(const OIS::MouseEvent& me)
 
 bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
-	if (id == OIS::MB_Right)
-	{
-		GetTrayMgr()->hideCursor();
-	}
-
-	if (!mRTSController.CaptureMousePressed(me, id)) return false;
+	if (!mRTSController.CaptureMousePressed(me, id, GetTrayMgr())) return false;
 	if (!OgreContext::mousePressed(me, id)) return false;
-
 	return true;
 }
 
 bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
-	if (id == OIS::MB_Right)
-	{
-		GetTrayMgr()->showCursor();
-	}
-
-	if (!mRTSController.CaptureMouseReleased(me, id)) return false;
+	if (!mRTSController.CaptureMouseReleased(me, id, GetTrayMgr())) return false;
 	if (!OgreContext::mouseReleased(me, id)) return false;
 
 	return true;
