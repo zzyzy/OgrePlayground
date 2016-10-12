@@ -24,11 +24,13 @@
 #include <OgreMeshManager.h>
 #include <OgreWindowEventUtilities.h>
 
+// OIS
 #include <OISEvents.h>
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
+// OgreBites
 #include <SdkTrays.h>
 
 // Bullet
