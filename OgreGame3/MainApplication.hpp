@@ -31,6 +31,8 @@ public:
 	MainApplication();
 	~MainApplication();
 
+	void Run();
+
 private:
 	// FrameListener
 	bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;

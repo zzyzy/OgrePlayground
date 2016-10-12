@@ -12,9 +12,11 @@
 
 int main()
 {
+	MainApplication app;
+
 	try
 	{
-		MainApplication app;
+		app.Run();
 	}
 	catch (Ogre::Exception ex)
 	{

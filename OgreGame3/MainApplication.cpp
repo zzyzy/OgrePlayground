@@ -12,12 +12,16 @@
 MainApplication::MainApplication() : 
 	mWorldGridNode(nullptr)
 {
-	mPhysicsContext.Setup();
-	mGraphicsContext.Setup("OgreGame3", this, this, this, this, this);
 }
 
 MainApplication::~MainApplication()
 {
+}
+
+void MainApplication::Run()
+{
+	mPhysicsContext.Setup();
+	mGraphicsContext.Setup("OgreGame3", this, this, this, this, this);
 }
 
 bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
