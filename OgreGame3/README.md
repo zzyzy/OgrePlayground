@@ -13,6 +13,8 @@ LMB   - Select object
 H     - Hide fps and Ogre logo
 ```
 
+![OgreGame3](screenshot/OgreGame3_12_10_2016 5_11_25 PM.png)
+
 ## Dependencies
 1. OGRE3D 1.9
 2. Bullet Physics 2.82
