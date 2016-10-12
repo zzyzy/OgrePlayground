@@ -48,12 +48,17 @@ private:
 	void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera) override;
 	void SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera* camera) override;
 	void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager* trayMgr) override;
-	void SetupScene(Ogre::SceneManager* const sceneMgr) override;
+	void SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera) override;
 
 	GraphicsContext mGraphicsContext;
 	PhysicsContext mPhysicsContext;
 	RTSController mRTSController;
 	ObjectSelector mObjectSelector;
+	Graph mWorld;
+	PathFinding mPathFinder;
+	std::vector<MovableObject*> mMovableObjects;
+
+	Ogre::SceneNode* mWorldGridNode;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

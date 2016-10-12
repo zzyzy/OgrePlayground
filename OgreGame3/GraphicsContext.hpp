@@ -38,13 +38,16 @@ public:
 	GraphicsContext();
 	~GraphicsContext();
 
-	bool Setup(Ogre::FrameListener* frameListener,
+	bool Setup(const Ogre::String& windowTitle,
+			   Ogre::FrameListener* frameListener,
 	           OIS::MouseListener* mouseListener,
 	           OIS::KeyListener* keyListener,
 	           OgreBites::SdkTrayListener* sdkTrayListener,
 	           IApplicationBehaviour* appBehaviour);
 
 	OgreBites::SdkTrayManager* GetTrayMgr() const;
+	Ogre::Ray GetMouseCursorRay() const;
+	Ogre::RaySceneQuery* CreateRayQuery() const;
 
 	// FrameListener
 	bool CaptureRenderQueue(const Ogre::FrameEvent& evt) const;

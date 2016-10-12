@@ -34,7 +34,8 @@ GraphicsContext::~GraphicsContext()
 	if (mRoot) delete mRoot;
 }
 
-bool GraphicsContext::Setup(Ogre::FrameListener* frameListener,
+bool GraphicsContext::Setup(const Ogre::String& windowTitle,
+							Ogre::FrameListener* frameListener,
                             OIS::MouseListener* mouseListener,
                             OIS::KeyListener* keyListener,
                             OgreBites::SdkTrayListener* sdkTrayListener,
@@ -73,7 +74,7 @@ bool GraphicsContext::Setup(Ogre::FrameListener* frameListener,
 	if (!(mRoot->restoreConfig() || mRoot->showConfigDialog()))
 		return false;
 
-	mWindow = mRoot->initialise(true, "TutorialApplication Render Window");
+	mWindow = mRoot->initialise(true, windowTitle);
 
 	mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
 
@@ -128,6 +129,18 @@ bool GraphicsContext::Setup(Ogre::FrameListener* frameListener,
 OgreBites::SdkTrayManager* GraphicsContext::GetTrayMgr() const
 {
 	return mTrayMgr;
+}
+
+Ogre::Ray GraphicsContext::GetMouseCursorRay() const
+{
+	return mCamera->getCameraToViewportRay(
+		static_cast<float>(mMouse->getMouseState().X.abs) / mMouse->getMouseState().width,
+		static_cast<float>(mMouse->getMouseState().Y.abs) / mMouse->getMouseState().height);
+}
+
+Ogre::RaySceneQuery* GraphicsContext::CreateRayQuery() const
+{
+	return mSceneMgr->createRayQuery(Ogre::Ray());
 }
 
 void GraphicsContext::windowResized(Ogre::RenderWindow* rw)
@@ -192,7 +205,7 @@ bool GraphicsContext::CaptureMouseReleased(const OIS::MouseEvent& me, const OIS:
 void GraphicsContext::setupCamera()
 {
 	mCamera = mSceneMgr->createCamera("MainCamera");
-	mCamera->setNearClipDistance(0.1f);
+	mCamera->setNearClipDistance(1.0f);
 
 	if (mAppBehaviour)
 		mAppBehaviour->SetupCamera(mSceneMgr, mCamera);
@@ -201,7 +214,7 @@ void GraphicsContext::setupCamera()
 void GraphicsContext::setupViewport()
 {
 	Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-	vp->setBackgroundColour(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
+	vp->setBackgroundColour(Ogre::ColourValue(0.25f, 0.25f, 0.25f));
 
 	mCamera->setAspectRatio(
 		Ogre::Real(vp->getActualWidth()) /
@@ -214,8 +227,6 @@ void GraphicsContext::setupViewport()
 
 void GraphicsContext::setupTrayUI()
 {
-
-	mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
 	if (mAppBehaviour)
 		mAppBehaviour->SetupTrayUI(mSceneMgr, mTrayMgr);
 }
@@ -223,5 +234,5 @@ void GraphicsContext::setupTrayUI()
 void GraphicsContext::setupScene()
 {
 	if (mAppBehaviour)
-		mAppBehaviour->SetupScene(mSceneMgr);
+		mAppBehaviour->SetupScene(mSceneMgr, mCamera);
 }

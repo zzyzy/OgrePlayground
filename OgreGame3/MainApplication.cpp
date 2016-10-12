@@ -7,11 +7,13 @@
 //
 
 #include "MainApplication.hpp"
+#include <random>
 
-MainApplication::MainApplication()
+MainApplication::MainApplication() : 
+	mWorldGridNode(nullptr)
 {
 	mPhysicsContext.Setup();
-	mGraphicsContext.Setup(this, this, this, this, this);
+	mGraphicsContext.Setup("OgreGame3", this, this, this, this, this);
 }
 
 MainApplication::~MainApplication()
@@ -20,6 +22,16 @@ MainApplication::~MainApplication()
 
 bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
+	for (auto obj : mMovableObjects)
+	{
+		if (obj->HasSeekTarget())
+		{
+			obj->SeekTarget(&mWorld, mPathFinder);
+		}
+
+		obj->Update(4.0f, evt.timeSinceLastFrame);
+	}
+
 	mPhysicsContext.Update(evt.timeSinceLastFrame);
 	if (!mRTSController.CaptureRenderQueue(evt)) return false;
 	if (!mGraphicsContext.CaptureRenderQueue(evt)) return false;
@@ -34,6 +46,31 @@ bool MainApplication::keyPressed(const OIS::KeyEvent& ke)
 
 bool MainApplication::keyReleased(const OIS::KeyEvent& ke)
 {
+	switch (ke.key)
+	{
+	case OIS::KC_0:
+		mWorldGridNode->flipVisibility();
+		for (auto obj : mMovableObjects)
+		{
+			obj->TogglePathVisualizer();
+		}
+		break;
+	case OIS::KC_H:
+		if (mGraphicsContext.GetTrayMgr()->isLogoVisible())
+		{
+			mGraphicsContext.GetTrayMgr()->hideFrameStats();
+			mGraphicsContext.GetTrayMgr()->hideLogo();
+		}
+		else
+		{
+			mGraphicsContext.GetTrayMgr()->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+			mGraphicsContext.GetTrayMgr()->showLogo(OgreBites::TL_BOTTOMRIGHT);
+		}
+		break;
+	default:
+		break;
+	}
+
 	if (!mRTSController.CaptureKeyReleased(ke)) return false;
 	if (!mObjectSelector.CaptureKeyReleased(ke)) return false;
 	return true;
@@ -57,6 +94,81 @@ bool MainApplication::mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID
 
 bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id)
 {
+	switch (id)
+	{
+	case OIS::MB_Right:
+	{
+		if (!mObjectSelector.HasSelection()) break;
+
+		Ogre::Ray mouseRay = mGraphicsContext.GetMouseCursorRay();
+
+		Ogre::RaySceneQuery* mRaySceneQuery = mGraphicsContext.CreateRayQuery();
+		mRaySceneQuery->setRay(mouseRay);
+		mRaySceneQuery->setSortByDistance(true);
+		mRaySceneQuery->setQueryMask(ENVIRONMENT_MASK | ROBOT_MASK);
+
+		Ogre::RaySceneQueryResult& result = mRaySceneQuery->execute();
+		Ogre::RaySceneQueryResult::iterator itr = result.begin();
+
+		if (!(itr != result.end() && itr->movable)) break;
+
+		Ogre::Vector3 location = mouseRay.getPoint(itr->distance);
+
+		if (itr->movable->getQueryFlags() == ROBOT_MASK)
+		{
+			for (auto obj : mObjectSelector.GetSelections())
+			{
+				if (itr->movable->getParentSceneNode()->getParentSceneNode() != obj)
+				{
+					std::cout << "Set seek target" << std::endl;
+					obj->ClearPaths();
+					obj->SetSeekTarget(itr->movable->getParentSceneNode()->getParentSceneNode());
+				}
+			}
+		}
+		else if (itr->movable->getQueryFlags() == ENVIRONMENT_MASK)
+		{
+			for (auto obj : mObjectSelector.GetSelections())
+			{
+				if (obj->HasSeekTarget())
+				{
+					obj->SetSeekTarget(nullptr);
+				}
+
+				obj->ClearPaths();
+
+				int startNode = mWorld.getNode(obj->getPosition());
+				int goalNode = mWorld.getNode(location);
+
+				// check that goal node is not the same as start node
+				if (goalNode != startNode)
+				{
+					// try to find path from start to goal node
+					std::deque<int> path;
+
+					// if path exists
+					if (mPathFinder.AStar(startNode, goalNode, mWorld, path))
+					{
+						path.pop_front();
+
+						for (auto p : path)
+						{
+							auto pos = mWorld.getPosition(p);
+							pos.y = 1.0f;
+							obj->AddNode(pos);
+						}
+
+						obj->BuildPathVisualizer();
+					}
+				}
+			}
+		}
+	}
+	break;
+	default:
+		break;
+	}
+
 	if (!mRTSController.CaptureMouseReleased(me, id, mGraphicsContext.GetTrayMgr())) return false;
 	if (!mObjectSelector.CaptureMouseReleased(me, id)) return false;
 	if (!mGraphicsContext.CaptureMouseReleased(me, id)) return false;
@@ -67,7 +179,7 @@ void MainApplication::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Came
 {
 	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	cameraNode->attachObject(camera);
-	cameraNode->translate(0.0f, 100.0f, 0.0f);
+	cameraNode->setPosition(0.0f, 100.0f, 0.0f);
 	cameraNode->lookAt(Ogre::Vector3(0.0f, 0.0f, 0.0f), Ogre::Node::TS_WORLD);
 	mRTSController.AttachCamera(cameraNode);
 	mObjectSelector.Setup(sceneMgr, camera);
@@ -79,50 +191,192 @@ void MainApplication::SetupViewport(Ogre::RenderWindow* const window, Ogre::Came
 
 void MainApplication::SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager* trayMgr)
 {
+	trayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+	trayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
 }
 
-void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr)
+void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera)
 {
-	sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+	// Setup scene settings
+	sceneMgr->setAmbientLight(Ogre::ColourValue(0.25f, 0.25f, 0.25f));
 	sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 
-	auto* light = sceneMgr->createLight("MainLight");
-	light->setPosition(0, 0, 0);
+	// Setup light
+	auto light = sceneMgr->createLight("MainLight");
+	light->setType(Ogre::Light::LT_POINT);
+	light->setDiffuseColour(Ogre::ColourValue::White);
+	light->setSpecularColour(Ogre::ColourValue::White);
+	//light->setPosition(0, 50, 0);
 	light->setQueryFlags(0);
 
-	// Setup ground, walls and ceiling (room)
+	auto lightNode = camera->getParentSceneNode()->createChildSceneNode();
+	lightNode->attachObject(light);
+	lightNode->setPosition(0, 50, 0);
+
+	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+	Ogre::MeshManager::getSingleton().createPlane(
+		"plane",
+		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		plane,
+		GRID_DIMENSION * SQUARE_SIZE, 
+		GRID_DIMENSION * SQUARE_SIZE, 
+		20, 20,
+		true,
+		1, 5, 5,
+		Ogre::Vector3::UNIT_Z
+	);
+
+	// Ground
+	auto groundEntity = sceneMgr->createEntity("plane");
+	groundEntity->setCastShadows(false);
+	groundEntity->setQueryFlags(ENVIRONMENT_MASK);
+	groundEntity->setMaterialName("Examples/GrassFloor");
+	auto groundNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
+	groundNode->attachObject(groundEntity);
+
+	// Ground rigidbody
+	btTransform groundTransform;
+	btBoxShape* groundShape = new btBoxShape(btVector3((GRID_DIMENSION * SQUARE_SIZE) / 2.0f, 5.0f, (GRID_DIMENSION * SQUARE_SIZE) / 2.0f));
+	groundTransform.setIdentity();
+	groundTransform.setOrigin(btVector3(0, -5, 0));
+	auto groundRigidBody = mPhysicsContext.CreateRigidBody(0.0f, groundTransform, groundShape, groundNode);
+	groundRigidBody->setFriction(1.0f);
+
+	// Obstacles
+	for (auto i = 0; i < TOTAL_NODES; ++i)
 	{
-		// Setup graphics
-		Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+		auto contents = mWorld.getContent(i);
 
-		Ogre::MeshManager::getSingleton().createPlane(
-			"plane",
-			Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-			plane,
-			100, 100, 20, 20,
-			true,
-			1, 5, 5,
-			Ogre::Vector3::UNIT_Z
-		);
+		if (contents)
+		{
+			Ogre::Vector3 scale = Ogre::Vector3(0.1f, 0.1f, 0.1f);
+			Ogre::Vector3 position = mWorld.getPosition(i);
 
-		// TODO Shadows doesn't seem to be working on planes?
-		// Ground
-		auto* groundEntity = sceneMgr->createEntity("plane");
-		groundEntity->setCastShadows(false);
-		groundEntity->setQueryFlags(ENVIRONMENT_MASK);
-		groundEntity->setMaterialName("Examples/GrassFloor");
-		auto* groundNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
-		groundNode->attachObject(groundEntity);
+			auto entity = sceneMgr->createEntity("cube.mesh");
+			entity->setQueryFlags(ENVIRONMENT_MASK);
+			entity->setCastShadows(true);
+			entity->setMaterialName("Examples/FireScrolling");
 
-		// Setup rigidbodies
-		btTransform transform;
-		btVector3 origin;
-		btQuaternion rotation;
+			auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+			node->attachObject(entity);
+			node->scale(scale);
 
-		// Ground rigidbody
-		btBoxShape* groundShape = new btBoxShape(btVector3(50.0f, 5.0f, 50.0f));
-		transform.setIdentity();
-		transform.setOrigin(btVector3(0, -5, 0));
-		mPhysicsContext.CreateRigidBody(0.0f, transform, groundShape, groundNode);
+			position.y = scale.y * 50.0f;
+			node->translate(position);
+
+			auto shape = new btBoxShape(btVector3(scale.x * 50.0f, scale.y * 50.0f, scale.z * 50.0f));
+			btTransform transform;
+			transform.setIdentity();
+			transform.setOrigin(Convert(position));
+			mPhysicsContext.CreateRigidBody(0.0f, transform, shape, node);
+		}
 	}
+
+	// Robots
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, TOTAL_NODES);
+	int index = 0;
+	std::unordered_set<int> indices;
+
+	for (auto i = 0; i < 10; ++i)
+	{
+		auto content = mWorld.getContent(index);
+		do
+		{
+			index = dis(gen);
+			if (indices.find(index) != indices.end())
+			{
+				continue;
+			}
+			content = mWorld.getContent(index);
+			indices.insert(index);
+		} while (content != 0);
+
+		auto scale = Ogre::Vector3(0.2f, 0.2f, 0.2f);
+		auto position = mWorld.getPosition(index);
+
+		auto entity = sceneMgr->createEntity("robot.mesh");
+		entity->setCastShadows(true);
+		entity->setQueryFlags(ROBOT_MASK);
+
+		position.y = 2;
+		auto node = OGRE_NEW MovableObject(sceneMgr, 25.0f, Ogre::ColourValue(255 / 255.0f, 82 / 255.0f, 51 / 255.0f), entity);
+		sceneMgr->getRootSceneNode()->addChild(node);
+		auto child = node->createChildSceneNode();
+		child->attachObject(entity);
+		child->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90.0f));
+		node->scale(scale);
+
+		auto shape = new btBoxShape(btVector3(2, 2, 2));
+
+		btTransform transform;
+		transform.setIdentity();
+		transform.setOrigin(Convert(position));
+
+		auto rigidBody = mPhysicsContext.CreateRigidBody(1.0f, transform, shape, node);
+
+		// Create a BillboardSet to represent a health bar and set its properties
+		auto healthBar = sceneMgr->createBillboardSet();
+		healthBar->setCastShadows(false);
+		healthBar->setDefaultDimensions(30, 3);
+		healthBar->setMaterialName("myMaterial/HealthBar");
+
+		// Create a billboard for the health bar BillboardSet
+		auto healthBarBB = healthBar->createBillboard(Ogre::Vector3(0, 100, 0));
+		// Calculate the health bar adjustments
+		float healthBarAdjuster = (1.0f - 1.0f) / 2;	// This must range from 0.0 to 0.5
+													// Set the health bar to the appropriate level
+		healthBarBB->setTexcoordRect(0.0f + healthBarAdjuster, 0.0f, 0.5f + healthBarAdjuster, 1.0f);
+
+		// Set it to always draw on top of other objects
+		healthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+
+		// Create a BillboardSet for a selection circle and set its properties
+		auto selectionCircle = sceneMgr->createBillboardSet();
+		selectionCircle->setCastShadows(false);
+		selectionCircle->setDefaultDimensions(60, 60);
+		selectionCircle->setMaterialName("myMaterial/SelectionCircle");
+		selectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
+		selectionCircle->setCommonDirection(Ogre::Vector3(0, 1, 0));
+		selectionCircle->setCommonUpVector(Ogre::Vector3(0, 0, -1));
+
+		// Create a billboard for the selection circle BillboardSet
+		auto selectionCircleBB = selectionCircle->createBillboard(Ogre::Vector3(0, 1, 0));
+		selectionCircleBB->setTexcoordRect(0.0f, 0.0f, 1.0f, 1.0f);
+
+		node->AttachDecal(healthBar);
+		node->AttachDecal(selectionCircle);
+		node->SetRigidBody(rigidBody);
+		mMovableObjects.push_back(node);
+	}
+
+	// Build world grid
+	auto worldGridColour = Ogre::ColourValue(51 / 255.0f, 255 / 255.0f, 247 / 255.0f);
+	auto worldGrid = sceneMgr->createManualObject();
+	worldGrid->clear();
+	worldGrid->setQueryFlags(0);
+	for (auto i = 0; i < TOTAL_NODES; ++i)
+	{
+		worldGrid->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_STRIP);
+		auto position = mWorld.getPosition(i);
+		position.x -= SQUARE_SIZE / 2.0f;
+		position.z -= SQUARE_SIZE / 2.0f;
+		position.y = 1.0f;
+		worldGrid->position(position);
+		worldGrid->colour(worldGridColour);
+		position.x += SQUARE_SIZE;
+		worldGrid->position(position);
+		worldGrid->colour(worldGridColour);
+		position.z += SQUARE_SIZE;
+		worldGrid->position(position);
+		worldGrid->colour(worldGridColour);
+		position.x -= SQUARE_SIZE;
+		worldGrid->position(position);
+		worldGrid->colour(worldGridColour);
+		worldGrid->end();
+	}
+	mWorldGridNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
+	mWorldGridNode->attachObject(worldGrid);
+	mWorldGridNode->setVisible(false);
 }
