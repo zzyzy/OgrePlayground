@@ -8,24 +8,24 @@
 
 #include "Utilities.hpp"
 
-Ogre::Vector3 Convert(const btVector3& vec3)
+Ogre::Vector3 Convert(const btVector3& vector3)
 {
-	return Ogre::Vector3(vec3.x(), vec3.y(), vec3.z());
+	return Ogre::Vector3(vector3.x(), vector3.y(), vector3.z());
 }
 
-btVector3 Convert(const Ogre::Vector3& vec3)
+btVector3 Convert(const Ogre::Vector3& vector3)
 {
-	return btVector3(vec3.x, vec3.y, vec3.z);
+	return btVector3(vector3.x, vector3.y, vector3.z);
 }
 
-btQuaternion Convert(const Ogre::Quaternion& Q)
+btQuaternion Convert(const Ogre::Quaternion& quaternion)
 {
-	return btQuaternion(Q.x, Q.y, Q.z, Q.w);
+	return btQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 }
 
-Ogre::Quaternion Convert(const btQuaternion& Q)
+Ogre::Quaternion Convert(const btQuaternion& quaternion)
 {
-	return Ogre::Quaternion(Q.w(), Q.x(), Q.y(), Q.z());
+	return Ogre::Quaternion(quaternion.w(), quaternion.x(), quaternion.y(), quaternion.z());
 }
 
 Ogre::Quaternion LookRotation(Ogre::Vector3 forward, Ogre::Vector3 up)
@@ -43,7 +43,7 @@ Ogre::Quaternion LookRotation(Ogre::Vector3 forward, Ogre::Vector3 up)
 	auto m21 = forward.y;
 	auto m22 = forward.z;
 
-	float num8 = (m00 + m11) + m22;
+	auto num8 = (m00 + m11) + m22;
 	Ogre::Quaternion quaternion;
 	if (num8 > 0.0f)
 	{
