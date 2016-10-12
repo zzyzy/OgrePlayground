@@ -3,6 +3,10 @@
 class IApplicationBehaviour
 {
 public:
+	virtual ~IApplicationBehaviour()
+	{
+	}
+
 	virtual void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera) = 0;
 	virtual void SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera* camera) = 0;
 	virtual void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager* trayMgr) = 0;
