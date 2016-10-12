@@ -1,6 +1,8 @@
 # OgreGame2
 This project is a small and simple FPS game where the player can shoot projectiles to hit objects in a room/scene. The player can also equip various weapons such as a handgun, shotgun, or a sniper rifle. This project uses Bullet Physics as the main physics engine for the desired physics effects.
 
+![OgreGame2](screenshot/OgreGame2_12_10_2016 5_19_40 PM.png)
+
 ## Dependencies
 1. OGRE3D 1.9
 2. Bullet Physics 2.82
