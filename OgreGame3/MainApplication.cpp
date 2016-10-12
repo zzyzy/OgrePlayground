@@ -183,7 +183,7 @@ void MainApplication::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Came
 {
 	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	cameraNode->attachObject(camera);
-	cameraNode->setPosition(0, 100, 0);
+	cameraNode->setPosition(0, 120, 0);
 	cameraNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
 	mRTSController.AttachCamera(cameraNode);
 	mObjectSelector.Setup(sceneMgr, camera);
@@ -214,7 +214,12 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 
 	auto lightNode = camera->getParentSceneNode()->createChildSceneNode();
 	lightNode->attachObject(light);
-	lightNode->setPosition(0, 50, 0);
+
+    // Because cameraNode looks at the ground, the 'height' is the Z axis
+    // Also, because the lightNode can be blocked by the cameraNode
+    // so we displace it in negative units, to bring it to the
+    // front of the cameraNode
+	lightNode->setPosition(0, 0, -60);
 
 	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 	Ogre::MeshManager::getSingleton().createPlane(
@@ -225,7 +230,7 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 		GRID_DIMENSION * SQUARE_SIZE,
 		20, 20,
 		true,
-		1, 5, 5,
+		1, 2.5, 2.5,
 		Ogre::Vector3::UNIT_Z
 	);
 
