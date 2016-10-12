@@ -9,7 +9,7 @@
 #include "MainApplication.hpp"
 #include <random>
 
-MainApplication::MainApplication() : 
+MainApplication::MainApplication() :
 	mWorldGridNode(nullptr)
 {
 }
@@ -33,7 +33,7 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 			obj->SeekTarget(&mWorld, mPathFinder);
 		}
 
-		obj->Update(4.0f, evt.timeSinceLastFrame);
+		obj->Update(4, evt.timeSinceLastFrame);
 	}
 
 	mPhysicsContext.Update(evt.timeSinceLastFrame);
@@ -101,74 +101,74 @@ bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonI
 	switch (id)
 	{
 	case OIS::MB_Right:
-	{
-		if (!mObjectSelector.HasSelection()) break;
-
-		Ogre::Ray mouseRay = mGraphicsContext.GetMouseCursorRay();
-
-		Ogre::RaySceneQuery* mRaySceneQuery = mGraphicsContext.CreateRayQuery();
-		mRaySceneQuery->setRay(mouseRay);
-		mRaySceneQuery->setSortByDistance(true);
-		mRaySceneQuery->setQueryMask(ENVIRONMENT_MASK | ROBOT_MASK);
-
-		Ogre::RaySceneQueryResult& result = mRaySceneQuery->execute();
-		Ogre::RaySceneQueryResult::iterator itr = result.begin();
-
-		if (!(itr != result.end() && itr->movable)) break;
-
-		Ogre::Vector3 location = mouseRay.getPoint(itr->distance);
-
-		if (itr->movable->getQueryFlags() == ROBOT_MASK)
 		{
-			for (auto obj : mObjectSelector.GetSelections())
+			if (!mObjectSelector.HasSelection()) break;
+
+			Ogre::Ray mouseRay = mGraphicsContext.GetMouseCursorRay();
+
+			Ogre::RaySceneQuery* mRaySceneQuery = mGraphicsContext.CreateRayQuery();
+			mRaySceneQuery->setRay(mouseRay);
+			mRaySceneQuery->setSortByDistance(true);
+			mRaySceneQuery->setQueryMask(ENVIRONMENT_MASK | ROBOT_MASK);
+
+			Ogre::RaySceneQueryResult& result = mRaySceneQuery->execute();
+			Ogre::RaySceneQueryResult::iterator itr = result.begin();
+
+			if (!(itr != result.end() && itr->movable)) break;
+
+			Ogre::Vector3 location = mouseRay.getPoint(itr->distance);
+
+			if (itr->movable->getQueryFlags() == ROBOT_MASK)
 			{
-				if (itr->movable->getParentSceneNode()->getParentSceneNode() != obj)
+				for (auto obj : mObjectSelector.GetSelections())
 				{
-					std::cout << "Set seek target" << std::endl;
-					obj->ClearPaths();
-					obj->SetSeekTarget(itr->movable->getParentSceneNode()->getParentSceneNode());
+					if (itr->movable->getParentSceneNode()->getParentSceneNode() != obj)
+					{
+						std::cout << "Set seek target" << std::endl;
+						obj->ClearPaths();
+						obj->SetSeekTarget(itr->movable->getParentSceneNode()->getParentSceneNode());
+					}
 				}
 			}
-		}
-		else if (itr->movable->getQueryFlags() == ENVIRONMENT_MASK)
-		{
-			for (auto obj : mObjectSelector.GetSelections())
+			else if (itr->movable->getQueryFlags() == ENVIRONMENT_MASK)
 			{
-				if (obj->HasSeekTarget())
+				for (auto obj : mObjectSelector.GetSelections())
 				{
-					obj->SetSeekTarget(nullptr);
-				}
-
-				obj->ClearPaths();
-
-				int startNode = mWorld.getNode(obj->getPosition());
-				int goalNode = mWorld.getNode(location);
-
-				// check that goal node is not the same as start node
-				if (goalNode != startNode)
-				{
-					// try to find path from start to goal node
-					std::deque<int> path;
-
-					// if path exists
-					if (mPathFinder.AStar(startNode, goalNode, mWorld, path))
+					if (obj->HasSeekTarget())
 					{
-						path.pop_front();
+						obj->SetSeekTarget(nullptr);
+					}
 
-						for (auto p : path)
+					obj->ClearPaths();
+
+					int startNode = mWorld.getNode(obj->getPosition());
+					int goalNode = mWorld.getNode(location);
+
+					// check that goal node is not the same as start node
+					if (goalNode != startNode)
+					{
+						// try to find path from start to goal node
+						std::deque<int> path;
+
+						// if path exists
+						if (mPathFinder.AStar(startNode, goalNode, mWorld, path))
 						{
-							auto pos = mWorld.getPosition(p);
-							pos.y = 1.0f;
-							obj->AddNode(pos);
-						}
+							path.pop_front();
 
-						obj->BuildPathVisualizer();
+							for (auto p : path)
+							{
+								auto pos = mWorld.getPosition(p);
+								pos.y = 1;
+								obj->AddNode(pos);
+							}
+
+							obj->BuildPathVisualizer();
+						}
 					}
 				}
 			}
 		}
-	}
-	break;
+		break;
 	default:
 		break;
 	}
@@ -183,8 +183,8 @@ void MainApplication::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Came
 {
 	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	cameraNode->attachObject(camera);
-	cameraNode->setPosition(0.0f, 100.0f, 0.0f);
-	cameraNode->lookAt(Ogre::Vector3(0.0f, 0.0f, 0.0f), Ogre::Node::TS_WORLD);
+	cameraNode->setPosition(0, 100, 0);
+	cameraNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
 	mRTSController.AttachCamera(cameraNode);
 	mObjectSelector.Setup(sceneMgr, camera);
 }
@@ -210,7 +210,6 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 	light->setType(Ogre::Light::LT_POINT);
 	light->setDiffuseColour(Ogre::ColourValue::White);
 	light->setSpecularColour(Ogre::ColourValue::White);
-	//light->setPosition(0, 50, 0);
 	light->setQueryFlags(0);
 
 	auto lightNode = camera->getParentSceneNode()->createChildSceneNode();
@@ -222,8 +221,8 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 		"plane",
 		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		plane,
-		GRID_DIMENSION * SQUARE_SIZE, 
-		GRID_DIMENSION * SQUARE_SIZE, 
+		GRID_DIMENSION * SQUARE_SIZE,
+		GRID_DIMENSION * SQUARE_SIZE,
 		20, 20,
 		true,
 		1, 5, 5,
@@ -240,11 +239,11 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 
 	// Ground rigidbody
 	btTransform groundTransform;
-	btBoxShape* groundShape = new btBoxShape(btVector3((GRID_DIMENSION * SQUARE_SIZE) / 2.0f, 5.0f, (GRID_DIMENSION * SQUARE_SIZE) / 2.0f));
+	btBoxShape* groundShape = new btBoxShape(btVector3((GRID_DIMENSION * SQUARE_SIZE) / 2.0f, 5, (GRID_DIMENSION * SQUARE_SIZE) / 2.0f));
 	groundTransform.setIdentity();
 	groundTransform.setOrigin(btVector3(0, -5, 0));
-	auto groundRigidBody = mPhysicsContext.CreateRigidBody(0.0f, groundTransform, groundShape, groundNode);
-	groundRigidBody->setFriction(1.0f);
+	auto groundRigidBody = mPhysicsContext.CreateRigidBody(0, groundTransform, groundShape, groundNode);
+	groundRigidBody->setFriction(1);
 
 	// Obstacles
 	for (auto i = 0; i < TOTAL_NODES; ++i)
@@ -272,7 +271,7 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 			btTransform transform;
 			transform.setIdentity();
 			transform.setOrigin(Convert(position));
-			mPhysicsContext.CreateRigidBody(0.0f, transform, shape, node);
+			mPhysicsContext.CreateRigidBody(0, transform, shape, node);
 		}
 	}
 
@@ -295,7 +294,8 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 			}
 			content = mWorld.getContent(index);
 			indices.insert(index);
-		} while (content != 0);
+		}
+		while (content != 0);
 
 		auto scale = Ogre::Vector3(0.2f, 0.2f, 0.2f);
 		auto position = mWorld.getPosition(index);
@@ -305,11 +305,11 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 		entity->setQueryFlags(ROBOT_MASK);
 
 		position.y = 2;
-		auto node = OGRE_NEW MovableObject(sceneMgr, 25.0f, Ogre::ColourValue(255 / 255.0f, 82 / 255.0f, 51 / 255.0f), entity);
+		auto node = OGRE_NEW MovableObject(sceneMgr, 25, Ogre::ColourValue(255 / 255.0f, 82 / 255.0f, 51 / 255.0f), entity);
 		sceneMgr->getRootSceneNode()->addChild(node);
 		auto child = node->createChildSceneNode();
 		child->attachObject(entity);
-		child->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90.0f));
+		child->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
 		node->scale(scale);
 
 		auto shape = new btBoxShape(btVector3(2, 2, 2));
@@ -318,7 +318,7 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 		transform.setIdentity();
 		transform.setOrigin(Convert(position));
 
-		auto rigidBody = mPhysicsContext.CreateRigidBody(1.0f, transform, shape, node);
+		auto rigidBody = mPhysicsContext.CreateRigidBody(1, transform, shape, node);
 
 		// Create a BillboardSet to represent a health bar and set its properties
 		auto healthBar = sceneMgr->createBillboardSet();
@@ -329,8 +329,8 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 		// Create a billboard for the health bar BillboardSet
 		auto healthBarBB = healthBar->createBillboard(Ogre::Vector3(0, 100, 0));
 		// Calculate the health bar adjustments
-		float healthBarAdjuster = (1.0f - 1.0f) / 2;	// This must range from 0.0 to 0.5
-													// Set the health bar to the appropriate level
+		float healthBarAdjuster = (1.0f - 1.0f) / 2; // This must range from 0.0 to 0.5
+		// Set the health bar to the appropriate level
 		healthBarBB->setTexcoordRect(0.0f + healthBarAdjuster, 0.0f, 0.5f + healthBarAdjuster, 1.0f);
 
 		// Set it to always draw on top of other objects
@@ -347,7 +347,7 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 
 		// Create a billboard for the selection circle BillboardSet
 		auto selectionCircleBB = selectionCircle->createBillboard(Ogre::Vector3(0, 1, 0));
-		selectionCircleBB->setTexcoordRect(0.0f, 0.0f, 1.0f, 1.0f);
+		selectionCircleBB->setTexcoordRect(0, 0, 1, 1);
 
 		node->AttachDecal(healthBar);
 		node->AttachDecal(selectionCircle);
@@ -366,7 +366,7 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 		auto position = mWorld.getPosition(i);
 		position.x -= SQUARE_SIZE / 2.0f;
 		position.z -= SQUARE_SIZE / 2.0f;
-		position.y = 1.0f;
+		position.y = 1;
 		worldGrid->position(position);
 		worldGrid->colour(worldGridColour);
 		position.x += SQUARE_SIZE;

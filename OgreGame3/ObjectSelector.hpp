@@ -59,25 +59,25 @@ public:
 
 	// These should be used internally but nevertheless exposing it so that 
 	// we can customize it some day (by not using the callbacks provided)
-	bool IsSelectionBoxLargeEnough(const Ogre::Vector2& first, const Ogre::Vector2& second);
+	bool IsSelectionBoxLargeEnough(const Ogre::Vector2& first, const Ogre::Vector2& second) const;
 	void SelectObject(const OIS::MouseEvent& me, const bool& modifySelection,
-		std::set<MovableObject*>& selectedObjects);
+	                  std::set<MovableObject*>& selectedObjects) const;
 	void SelectObjects(const Ogre::Vector2& first, const Ogre::Vector2& second,
-		const bool& modifySelection, std::set<MovableObject*>& selectedObjects);
+	                   const bool& modifySelection, std::set<MovableObject*>& selectedObjects) const;
 
 	// These can be used by other objects/classes
 	bool HasSelection() const;
 	std::set<MovableObject*> GetSelections() const;
 
 private:
-	Ogre::SceneManager* mSceneMgr;							// Scene manager needed to create the ray query
-	Ogre::Camera* mCamera;									// ^ needed for ray query too
-	SelectionBox* mSelectionBox;							// Selection box
-	bool mSelecting;										// If it is selecting multiple objects
-	bool mModifySelection;									// Whether we want to add/remove selections
-	Ogre::Vector2 mStartLoc;								// Selection box top left x y coords
-	Ogre::Vector2 mEndLoc;									// Selection box bottom right x y coords
-	std::set<MovableObject*> mSelectedObjects;				// Set of selected objects
+	Ogre::SceneManager* mSceneMgr;              // Scene manager needed to create the ray query
+	Ogre::Camera* mCamera;                      // ^ needed for ray query too
+	SelectionBox* mSelectionBox;                // Selection box
+	bool mSelecting;                            // If it is selecting multiple objects
+	bool mModifySelection;                      // Whether we want to add/remove selections
+	Ogre::Vector2 mStartLoc;                    // Selection box top left x y coords
+	Ogre::Vector2 mEndLoc;                      // Selection box bottom right x y coords
+	std::set<MovableObject*> mSelectedObjects;  // Set of selected objects
 };
 
 #endif // __OBJECTSELECTOR_HPP__

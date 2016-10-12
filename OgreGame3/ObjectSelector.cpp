@@ -176,7 +176,7 @@ bool ObjectSelector::CaptureMouseReleased(const OIS::MouseEvent& me, const OIS::
 	return true;
 }
 
-bool ObjectSelector::IsSelectionBoxLargeEnough(const Ogre::Vector2& first, const Ogre::Vector2& second)
+bool ObjectSelector::IsSelectionBoxLargeEnough(const Ogre::Vector2& first, const Ogre::Vector2& second) const
 {
 	float left = first.x, right = second.x;
 	float top = first.y, bottom = second.y;
@@ -200,7 +200,7 @@ bool ObjectSelector::IsSelectionBoxLargeEnough(const Ogre::Vector2& first, const
 }
 
 void ObjectSelector::SelectObject(const OIS::MouseEvent& me, const bool& modifySelection,
-                                  std::set<MovableObject*>& selectedObjects)
+                                  std::set<MovableObject*>& selectedObjects) const
 {
 	Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(
 		static_cast<float>(me.state.X.abs) / me.state.width,
@@ -250,7 +250,7 @@ void ObjectSelector::SelectObject(const OIS::MouseEvent& me, const bool& modifyS
 }
 
 void ObjectSelector::SelectObjects(const Ogre::Vector2& first, const Ogre::Vector2& second, const bool& modifySelection,
-                                   std::set<MovableObject*>& selectedObjects)
+                                   std::set<MovableObject*>& selectedObjects) const
 {
 	auto volQuery = mSceneMgr->createPlaneBoundedVolumeQuery(Ogre::PlaneBoundedVolumeList());
 	float left = first.x, right = second.x;

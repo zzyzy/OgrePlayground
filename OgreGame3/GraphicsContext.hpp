@@ -39,7 +39,7 @@ public:
 	~GraphicsContext();
 
 	bool Setup(const Ogre::String& windowTitle,
-			   Ogre::FrameListener* frameListener,
+	           Ogre::FrameListener* frameListener,
 	           OIS::MouseListener* mouseListener,
 	           OIS::KeyListener* keyListener,
 	           OgreBites::SdkTrayListener* sdkTrayListener,

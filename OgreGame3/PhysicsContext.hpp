@@ -69,9 +69,9 @@ public:
 
 	// GhostObject
 	btPairCachingGhostObject* PhysicsContext::CreateGhostObject(const btTransform& startTrans,
-	                                                           btCollisionShape* collisionShape,
-	                                                           btBroadphaseProxy::CollisionFilterGroups filterGroup = btBroadphaseProxy::AllFilter,
-	                                                           btBroadphaseProxy::CollisionFilterGroups filterMask = btBroadphaseProxy::AllFilter);
+	                                                            btCollisionShape* collisionShape,
+	                                                            btBroadphaseProxy::CollisionFilterGroups filterGroup = btBroadphaseProxy::AllFilter,
+	                                                            btBroadphaseProxy::CollisionFilterGroups filterMask = btBroadphaseProxy::AllFilter);
 	void DestroyGhostObject(btPairCachingGhostObject* ghostObject);
 
 	// RigidBody collision detection

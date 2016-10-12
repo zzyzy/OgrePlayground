@@ -140,9 +140,9 @@ void PhysicsContext::DestroyRigidBody(btRigidBody* rigidBody)
 }
 
 btPairCachingGhostObject* PhysicsContext::CreateGhostObject(const btTransform& startTrans,
-                                                           btCollisionShape* collisionShape,
-                                                           btBroadphaseProxy::CollisionFilterGroups filterGroup,
-                                                           btBroadphaseProxy::CollisionFilterGroups filterMask)
+                                                            btCollisionShape* collisionShape,
+                                                            btBroadphaseProxy::CollisionFilterGroups filterGroup,
+                                                            btBroadphaseProxy::CollisionFilterGroups filterMask)
 {
 	mCollisionShapes.push_back(collisionShape);
 	auto ghostObject = new btPairCachingGhostObject();

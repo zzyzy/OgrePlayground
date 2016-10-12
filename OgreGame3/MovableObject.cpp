@@ -27,10 +27,10 @@ MovableObject::MovableObject(Ogre::SceneManager* creator,
 	mAnimationState(nullptr),
 	mShowPathViz(false)
 {
-	Setup(creator);
+	setup(creator);
 }
 
-void MovableObject::Setup(Ogre::SceneManager* creator)
+void MovableObject::setup(Ogre::SceneManager* creator)
 {
 	mPathVisualizer = creator->createManualObject();
 	mPathVisualizer->clear();

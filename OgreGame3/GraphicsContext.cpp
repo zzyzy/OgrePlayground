@@ -35,7 +35,7 @@ GraphicsContext::~GraphicsContext()
 }
 
 bool GraphicsContext::Setup(const Ogre::String& windowTitle,
-							Ogre::FrameListener* frameListener,
+                            Ogre::FrameListener* frameListener,
                             OIS::MouseListener* mouseListener,
                             OIS::KeyListener* keyListener,
                             OgreBites::SdkTrayListener* sdkTrayListener,
@@ -45,8 +45,8 @@ bool GraphicsContext::Setup(const Ogre::String& windowTitle,
 	mResourcesCfg = "resources_d.cfg";
 	mPluginsCfg = "plugins_d.cfg";
 #else
-    mResourcesCfg = "resources.cfg";
-    mPluginsCfg = "plugins.cfg";
+	mResourcesCfg = "resources.cfg";
+	mPluginsCfg = "plugins.cfg";
 #endif
 
 	mRoot = new Ogre::Root(mPluginsCfg);
