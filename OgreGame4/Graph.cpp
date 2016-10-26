@@ -7,7 +7,7 @@ int	Graph::mGrid[TOTAL_NODES] = {
 
 Graph::Graph()
 {
-	std::random_device rd;
+	/*std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dis(0, TOTAL_NODES);
 	int index = dis(gen);
@@ -24,7 +24,7 @@ Graph::Graph()
 			mGrid[index] = 1;
 			++i;
 		}
-	}
+	}*/
 }
 
 Graph::~Graph()

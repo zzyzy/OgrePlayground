@@ -8,6 +8,7 @@
 
 #include "MainApplication.hpp"
 #include <random>
+#include "ProjectileMath.hpp"
 
 MainApplication::MainApplication() :
 	mWorldGridNode(nullptr)
@@ -250,114 +251,264 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 	auto groundRigidBody = mPhysicsContext.CreateRigidBody(0, groundTransform, groundShape, groundNode);
 	groundRigidBody->setFriction(1);
 
-	// Obstacles
-	for (auto i = 0; i < TOTAL_NODES; ++i)
+	//// Obstacles
+	//for (auto i = 0; i < TOTAL_NODES; ++i)
+	//{
+	//	auto contents = mWorld.getContent(i);
+
+	//	if (contents)
+	//	{
+	//		Ogre::Vector3 scale = Ogre::Vector3(0.1f, 0.1f, 0.1f);
+	//		Ogre::Vector3 position = mWorld.getPosition(i);
+
+	//		auto entity = sceneMgr->createEntity("cube.mesh");
+	//		entity->setQueryFlags(ENVIRONMENT_MASK);
+	//		entity->setCastShadows(true);
+	//		entity->setMaterialName("Examples/FireScrolling");
+
+	//		auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+	//		node->attachObject(entity);
+	//		node->scale(scale);
+
+	//		position.y = scale.y * 50.0f;
+	//		node->translate(position);
+
+	//		auto shape = new btBoxShape(btVector3(scale.x * 50.0f, scale.y * 50.0f, scale.z * 50.0f));
+	//		btTransform transform;
+	//		transform.setIdentity();
+	//		transform.setOrigin(Convert(position));
+	//		mPhysicsContext.CreateRigidBody(0, transform, shape, node);
+	//	}
+	//}
+
+	//// Robots
+	//std::random_device rd;
+	//std::mt19937 gen(rd());
+	//std::uniform_int_distribution<int> dis(0, TOTAL_NODES);
+	//int index = 0;
+	//std::unordered_set<int> indices;
+
+	//for (auto i = 0; i < 10; ++i)
+	//{
+	//	auto content = mWorld.getContent(index);
+	//	do
+	//	{
+	//		index = dis(gen);
+	//		if (indices.find(index) != indices.end())
+	//		{
+	//			continue;
+	//		}
+	//		content = mWorld.getContent(index);
+	//		indices.insert(index);
+	//	}
+	//	while (content != 0);
+
+	//	auto scale = Ogre::Vector3(0.2f, 0.2f, 0.2f);
+	//	auto position = mWorld.getPosition(index);
+
+	//	auto entity = sceneMgr->createEntity("robot.mesh");
+	//	entity->setCastShadows(true);
+	//	entity->setQueryFlags(ROBOT_MASK);
+
+	//	position.y = 2;
+	//	auto node = OGRE_NEW MovableObject(sceneMgr, 25, Ogre::ColourValue(255 / 255.0f, 82 / 255.0f, 51 / 255.0f), entity);
+	//	sceneMgr->getRootSceneNode()->addChild(node);
+	//	auto child = node->createChildSceneNode();
+	//	child->attachObject(entity);
+	//	child->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
+	//	node->scale(scale);
+
+	//	auto shape = new btBoxShape(btVector3(2, 2, 2));
+
+	//	btTransform transform;
+	//	transform.setIdentity();
+	//	transform.setOrigin(Convert(position));
+
+	//	auto rigidBody = mPhysicsContext.CreateRigidBody(1, transform, shape, node);
+
+	//	// Create a BillboardSet to represent a health bar and set its properties
+	//	auto healthBar = sceneMgr->createBillboardSet();
+	//	healthBar->setCastShadows(false);
+	//	healthBar->setDefaultDimensions(30, 3);
+	//	healthBar->setMaterialName("myMaterial/HealthBar");
+
+	//	// Create a billboard for the health bar BillboardSet
+	//	auto healthBarBB = healthBar->createBillboard(Ogre::Vector3(0, 100, 0));
+	//	// Calculate the health bar adjustments
+	//	float healthBarAdjuster = (1.0f - 1.0f) / 2; // This must range from 0.0 to 0.5
+	//	// Set the health bar to the appropriate level
+	//	healthBarBB->setTexcoordRect(0.0f + healthBarAdjuster, 0.0f, 0.5f + healthBarAdjuster, 1.0f);
+
+	//	// Set it to always draw on top of other objects
+	//	healthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+
+	//	// Create a BillboardSet for a selection circle and set its properties
+	//	auto selectionCircle = sceneMgr->createBillboardSet();
+	//	selectionCircle->setCastShadows(false);
+	//	selectionCircle->setDefaultDimensions(60, 60);
+	//	selectionCircle->setMaterialName("myMaterial/SelectionCircle");
+	//	selectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
+	//	selectionCircle->setCommonDirection(Ogre::Vector3(0, 1, 0));
+	//	selectionCircle->setCommonUpVector(Ogre::Vector3(0, 0, -1));
+
+	//	// Create a billboard for the selection circle BillboardSet
+	//	auto selectionCircleBB = selectionCircle->createBillboard(Ogre::Vector3(0, 1, 0));
+	//	selectionCircleBB->setTexcoordRect(0, 0, 1, 1);
+
+	//	node->AttachDecal(healthBar);
+	//	node->AttachDecal(selectionCircle);
+	//	node->SetRigidBody(rigidBody);
+	//	mMovableObjects.push_back(node);
+	//}
+
+    // Test robot
+    {
+        auto scale = Ogre::Vector3(0.2f, 0.2f, 0.2f);
+	    auto position = mWorld.getPosition(GRID_DIMENSION * GRID_DIMENSION / 2);
+
+	    auto entity = sceneMgr->createEntity("robot.mesh");
+	    entity->setCastShadows(true);
+	    entity->setQueryFlags(ROBOT_MASK);
+
+	    position.y = 2;
+	    auto node = OGRE_NEW MovableObject(sceneMgr, 25, Ogre::ColourValue(255 / 255.0f, 82 / 255.0f, 51 / 255.0f), entity);
+	    sceneMgr->getRootSceneNode()->addChild(node);
+	    auto child = node->createChildSceneNode();
+	    child->attachObject(entity);
+	    child->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
+	    node->scale(scale);
+
+	    auto shape = new btBoxShape(btVector3(2, 2, 2));
+
+	    btTransform transform;
+	    transform.setIdentity();
+	    transform.setOrigin(Convert(position));
+
+	    auto rigidBody = mPhysicsContext.CreateRigidBody(1, transform, shape, node);
+
+	    // Create a BillboardSet to represent a health bar and set its properties
+	    auto healthBar = sceneMgr->createBillboardSet();
+	    healthBar->setCastShadows(false);
+	    healthBar->setDefaultDimensions(30, 3);
+	    healthBar->setMaterialName("myMaterial/HealthBar");
+
+	    // Create a billboard for the health bar BillboardSet
+	    auto healthBarBB = healthBar->createBillboard(Ogre::Vector3(0, 100, 0));
+	    // Calculate the health bar adjustments
+	    float healthBarAdjuster = (1.0f - 1.0f) / 2; // This must range from 0.0 to 0.5
+	    // Set the health bar to the appropriate level
+	    healthBarBB->setTexcoordRect(0.0f + healthBarAdjuster, 0.0f, 0.5f + healthBarAdjuster, 1.0f);
+
+	    // Set it to always draw on top of other objects
+	    healthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+
+	    // Create a BillboardSet for a selection circle and set its properties
+	    auto selectionCircle = sceneMgr->createBillboardSet();
+	    selectionCircle->setCastShadows(false);
+	    selectionCircle->setDefaultDimensions(60, 60);
+	    selectionCircle->setMaterialName("myMaterial/SelectionCircle");
+	    selectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
+	    selectionCircle->setCommonDirection(Ogre::Vector3(0, 1, 0));
+	    selectionCircle->setCommonUpVector(Ogre::Vector3(0, 0, -1));
+
+	    // Create a billboard for the selection circle BillboardSet
+	    auto selectionCircleBB = selectionCircle->createBillboard(Ogre::Vector3(0, 1, 0));
+	    selectionCircleBB->setTexcoordRect(0, 0, 1, 1);
+
+	    node->AttachDecal(healthBar);
+	    node->AttachDecal(selectionCircle);
+	    node->SetRigidBody(rigidBody);
+	    mMovableObjects.push_back(node);
+    }
+
+    // Enemy robot
+    {
+        auto scale = Ogre::Vector3(0.2f, 0.2f, 0.2f);
+        auto position = mWorld.getPosition(GRID_DIMENSION * GRID_DIMENSION / 4);
+
+        auto entity = sceneMgr->createEntity("robot.mesh");
+        entity->setCastShadows(true);
+        entity->setQueryFlags(ROBOT_MASK);
+
+        position.y = 2;
+        auto node = OGRE_NEW MovableObject(sceneMgr, 25, Ogre::ColourValue(255 / 255.0f, 82 / 255.0f, 51 / 255.0f), entity);
+        sceneMgr->getRootSceneNode()->addChild(node);
+        auto child = node->createChildSceneNode();
+        child->attachObject(entity);
+        child->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
+        node->scale(scale);
+
+        auto shape = new btBoxShape(btVector3(2, 2, 2));
+
+        btTransform transform;
+        transform.setIdentity();
+        transform.setOrigin(Convert(position));
+
+        auto rigidBody = mPhysicsContext.CreateRigidBody(1, transform, shape, node);
+
+        // Create a BillboardSet to represent a health bar and set its properties
+        auto healthBar = sceneMgr->createBillboardSet();
+        healthBar->setCastShadows(false);
+        healthBar->setDefaultDimensions(30, 3);
+        healthBar->setMaterialName("myMaterial/HealthBar");
+
+        // Create a billboard for the health bar BillboardSet
+        auto healthBarBB = healthBar->createBillboard(Ogre::Vector3(0, 100, 0));
+        // Calculate the health bar adjustments
+        float healthBarAdjuster = (1.0f - 1.0f) / 2; // This must range from 0.0 to 0.5
+                                                     // Set the health bar to the appropriate level
+        healthBarBB->setTexcoordRect(0.0f + healthBarAdjuster, 0.0f, 0.5f + healthBarAdjuster, 1.0f);
+
+        // Set it to always draw on top of other objects
+        healthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+
+        // Create a BillboardSet for a selection circle and set its properties
+        auto selectionCircle = sceneMgr->createBillboardSet();
+        selectionCircle->setCastShadows(false);
+        selectionCircle->setDefaultDimensions(60, 60);
+        selectionCircle->setMaterialName("myMaterial/SelectionCircle");
+        selectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
+        selectionCircle->setCommonDirection(Ogre::Vector3(0, 1, 0));
+        selectionCircle->setCommonUpVector(Ogre::Vector3(0, 0, -1));
+
+        // Create a billboard for the selection circle BillboardSet
+        auto selectionCircleBB = selectionCircle->createBillboard(Ogre::Vector3(0, 1, 0));
+        selectionCircleBB->setTexcoordRect(0, 0, 1, 1);
+
+        node->AttachDecal(healthBar);
+        node->AttachDecal(selectionCircle);
+        node->SetRigidBody(rigidBody);
+        mMovableObjects.push_back(node);
+    }
+
+    // Test projectile
 	{
-		auto contents = mWorld.getContent(i);
+	    auto entity = sceneMgr->createEntity("sphere.mesh");
+        entity->setCastShadows(true);
+        auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+        node->attachObject(entity);
+        node->scale(0.02f, 0.02f, 0.02f);
+        node->translate(-70, 0, -50);
+        auto position = node->getPosition();
 
-		if (contents)
-		{
-			Ogre::Vector3 scale = Ogre::Vector3(0.1f, 0.1f, 0.1f);
-			Ogre::Vector3 position = mWorld.getPosition(i);
+        auto shape = new btBoxShape(btVector3(2, 2, 2));
 
-			auto entity = sceneMgr->createEntity("cube.mesh");
-			entity->setQueryFlags(ENVIRONMENT_MASK);
-			entity->setCastShadows(true);
-			entity->setMaterialName("Examples/FireScrolling");
+        btTransform transform;
+        transform.setIdentity();
+        transform.setOrigin(Convert(position));
 
-			auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-			node->attachObject(entity);
-			node->scale(scale);
+        auto rigidBody = mPhysicsContext.CreateRigidBody(1, transform, shape, node);
 
-			position.y = scale.y * 50.0f;
-			node->translate(position);
-
-			auto shape = new btBoxShape(btVector3(scale.x * 50.0f, scale.y * 50.0f, scale.z * 50.0f));
-			btTransform transform;
-			transform.setIdentity();
-			transform.setOrigin(Convert(position));
-			mPhysicsContext.CreateRigidBody(0, transform, shape, node);
-		}
-	}
-
-	// Robots
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(0, TOTAL_NODES);
-	int index = 0;
-	std::unordered_set<int> indices;
-
-	for (auto i = 0; i < 10; ++i)
-	{
-		auto content = mWorld.getContent(index);
-		do
-		{
-			index = dis(gen);
-			if (indices.find(index) != indices.end())
-			{
-				continue;
-			}
-			content = mWorld.getContent(index);
-			indices.insert(index);
-		}
-		while (content != 0);
-
-		auto scale = Ogre::Vector3(0.2f, 0.2f, 0.2f);
-		auto position = mWorld.getPosition(index);
-
-		auto entity = sceneMgr->createEntity("robot.mesh");
-		entity->setCastShadows(true);
-		entity->setQueryFlags(ROBOT_MASK);
-
-		position.y = 2;
-		auto node = OGRE_NEW MovableObject(sceneMgr, 25, Ogre::ColourValue(255 / 255.0f, 82 / 255.0f, 51 / 255.0f), entity);
-		sceneMgr->getRootSceneNode()->addChild(node);
-		auto child = node->createChildSceneNode();
-		child->attachObject(entity);
-		child->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
-		node->scale(scale);
-
-		auto shape = new btBoxShape(btVector3(2, 2, 2));
-
-		btTransform transform;
-		transform.setIdentity();
-		transform.setOrigin(Convert(position));
-
-		auto rigidBody = mPhysicsContext.CreateRigidBody(1, transform, shape, node);
-
-		// Create a BillboardSet to represent a health bar and set its properties
-		auto healthBar = sceneMgr->createBillboardSet();
-		healthBar->setCastShadows(false);
-		healthBar->setDefaultDimensions(30, 3);
-		healthBar->setMaterialName("myMaterial/HealthBar");
-
-		// Create a billboard for the health bar BillboardSet
-		auto healthBarBB = healthBar->createBillboard(Ogre::Vector3(0, 100, 0));
-		// Calculate the health bar adjustments
-		float healthBarAdjuster = (1.0f - 1.0f) / 2; // This must range from 0.0 to 0.5
-		// Set the health bar to the appropriate level
-		healthBarBB->setTexcoordRect(0.0f + healthBarAdjuster, 0.0f, 0.5f + healthBarAdjuster, 1.0f);
-
-		// Set it to always draw on top of other objects
-		healthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
-
-		// Create a BillboardSet for a selection circle and set its properties
-		auto selectionCircle = sceneMgr->createBillboardSet();
-		selectionCircle->setCastShadows(false);
-		selectionCircle->setDefaultDimensions(60, 60);
-		selectionCircle->setMaterialName("myMaterial/SelectionCircle");
-		selectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
-		selectionCircle->setCommonDirection(Ogre::Vector3(0, 1, 0));
-		selectionCircle->setCommonUpVector(Ogre::Vector3(0, 0, -1));
-
-		// Create a billboard for the selection circle BillboardSet
-		auto selectionCircleBB = selectionCircle->createBillboard(Ogre::Vector3(0, 1, 0));
-		selectionCircleBB->setTexcoordRect(0, 0, 1, 1);
-
-		node->AttachDecal(healthBar);
-		node->AttachDecal(selectionCircle);
-		node->SetRigidBody(rigidBody);
-		mMovableObjects.push_back(node);
+        auto target = Ogre::Vector3(0, 0, 0);
+        Ogre::Vector3 s0, s1;
+        float gravity;
+        bool hasSolution = ProjectileMath::SolveBallisticArcLateral(position, 150.0f, target, 5.0f, &s0, &gravity);
+        if (hasSolution)
+        {
+            btVector3 vel = Convert(s0);
+            rigidBody->setLinearVelocity(vel);
+            rigidBody->setGravity(btVector3(0, -gravity, 0));
+        }
 	}
 
 	// Build world grid
