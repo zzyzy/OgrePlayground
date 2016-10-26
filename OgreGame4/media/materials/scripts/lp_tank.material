@@ -1,0 +1,18 @@
+material lp_tank_material
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.5 0.5 0.5
+			diffuse 0.8 0.8 0.8
+			specular 0.1 0.1 0.1 1.0
+
+			texture_unit
+			{
+				texture lp_tank_skin.bmp
+			}
+		}
+	}
+}
+
