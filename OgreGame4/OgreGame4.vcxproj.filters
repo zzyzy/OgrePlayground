@@ -16,11 +16,23 @@
     <Filter Include="Configuration Files">
       <UniqueIdentifier>{bdce3324-9e8a-4f5a-ab0e-ebdfb759b329}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\AI Layer">
+    <Filter Include="Header Files\Math">
+      <UniqueIdentifier>{84c9d1d5-c6f3-4bca-98a3-1d32d6b64d74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{fb1d2a0f-b072-4f2b-800e-62828c94b8fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pathfinding">
+      <UniqueIdentifier>{fb4cde00-3812-45db-b95c-b51436240d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pathfinding">
       <UniqueIdentifier>{ac416a11-933a-4955-afd6-811e7e6ada59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\AI Layer">
-      <UniqueIdentifier>{fb4cde00-3812-45db-b95c-b51436240d3e}</UniqueIdentifier>
+    <Filter Include="Header Files\Contexts">
+      <UniqueIdentifier>{8921d724-2e3f-45b8-8175-a3fb82c2256b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Contexts">
+      <UniqueIdentifier>{a198152e-e459-4897-85bd-fddc57bc21b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,34 +55,34 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Connection.h">
-      <Filter>Header Files\AI Layer</Filter>
+      <Filter>Header Files\Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="Graph.h">
-      <Filter>Header Files\AI Layer</Filter>
+      <Filter>Header Files\Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="NodeRecord.h">
-      <Filter>Header Files\AI Layer</Filter>
+      <Filter>Header Files\Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="PathFinding.h">
-      <Filter>Header Files\AI Layer</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsContext.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsContext.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IApplicationBehaviour.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Math.hpp">
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="ProjectileMath.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GraphicsContext.hpp">
+      <Filter>Header Files\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsContext.hpp">
+      <Filter>Header Files\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="IApplicationBehaviour.hpp">
+      <Filter>Header Files\Contexts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -93,31 +105,31 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Connection.cpp">
-      <Filter>Source Files\AI Layer</Filter>
+      <Filter>Source Files\Pathfinding</Filter>
     </ClCompile>
     <ClCompile Include="Graph.cpp">
-      <Filter>Source Files\AI Layer</Filter>
+      <Filter>Source Files\Pathfinding</Filter>
     </ClCompile>
     <ClCompile Include="NodeRecord.cpp">
-      <Filter>Source Files\AI Layer</Filter>
+      <Filter>Source Files\Pathfinding</Filter>
     </ClCompile>
     <ClCompile Include="PathFinding.cpp">
-      <Filter>Source Files\AI Layer</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsContext.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Pathfinding</Filter>
     </ClCompile>
     <ClCompile Include="Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProjectileMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Math.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileMath.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsContext.cpp">
+      <Filter>Source Files\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsContext.cpp">
+      <Filter>Source Files\Contexts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
