@@ -486,7 +486,7 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
         }
     }
 
-    // Tank
+    // Tank ch
     {
         auto bodyEntity = sceneMgr->createEntity("chbody.mesh");
         auto bodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -524,7 +524,50 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 
         nozzleNode->setVisible(false);
         bodyNode->scale(0.25f, 0.25f, 0.25f);
+        bodyNode->scale(0.5f, 0.5f, 0.5f);
         bodyNode->translate(-70, 5, -50);
+    }
+
+    // Tank lp
+    {
+        auto bodyEntity = sceneMgr->createEntity("lpbody.mesh");
+        auto bodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
+        auto bodyChild = bodyNode->createChildSceneNode();
+        bodyEntity->setCastShadows(true);
+        bodyEntity->setMaterialName("lp_tank_material");
+        bodyChild->attachObject(bodyEntity);
+        bodyChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+
+        auto turretEntity = sceneMgr->createEntity("lpturret.mesh");
+        auto turretNode = bodyNode->createChildSceneNode();
+        auto turretChild = turretNode->createChildSceneNode();
+        turretEntity->setCastShadows(true);
+        turretEntity->setMaterialName("lp_tank_material");
+        turretChild->attachObject(turretEntity);
+        turretChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+        turretNode->translate(0, 1, 0);
+
+        auto barrelEntity = sceneMgr->createEntity("lpbarrel.mesh");
+        auto barrelNode = turretNode->createChildSceneNode();
+        auto barrelChild = barrelNode->createChildSceneNode();
+        barrelEntity->setCastShadows(true);
+        barrelEntity->setMaterialName("lp_tank_material");
+        barrelChild->attachObject(barrelEntity);
+        barrelChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+        barrelNode->translate(-1.25f, 12, 30);
+
+        auto nozzleEntity = sceneMgr->createEntity("sphere.mesh");
+        auto nozzleNode = barrelNode->createChildSceneNode();
+        auto nozzleChild = nozzleNode->createChildSceneNode();
+        nozzleEntity->setCastShadows(true);
+        nozzleChild->attachObject(nozzleEntity);
+        nozzleChild->scale(0.05f, 0.05f, 0.05f);
+        nozzleNode->translate(0.75f, 0, 40);
+
+        nozzleNode->setVisible(false);
+        bodyNode->scale(0.33f, 0.33f, 0.33f);
+        bodyNode->scale(0.5f, 0.5f, 0.5f);
+        bodyNode->translate(-50, 5, -50);
 
         mBarrel = new Barrel(turretNode, barrelNode, nozzleNode, sceneMgr, &mPhysicsContext, 5, 1, 250, 2, 1.0f, 10);
     }

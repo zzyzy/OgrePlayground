@@ -75,15 +75,15 @@ void Barrel::Update(const float& deltaTime)
     }
     auto barrelRotation = angles;
 
-    Ogre::Quaternion rotation = Ogre::Quaternion::Slerp(5.0f * deltaTime, mTurret->getOrientation(), turretRotation);
+    Ogre::Quaternion rotation = Ogre::Quaternion::Slerp(4.0f * deltaTime, mTurret->getOrientation(), turretRotation, true);
     mTurret->setOrientation(rotation);
 
-    rotation = Ogre::Quaternion::Slerp(5.0f * deltaTime, mBarrel->getOrientation(), barrelRotation);
+    rotation = Ogre::Quaternion::Slerp(4.0f * deltaTime, mBarrel->getOrientation(), barrelRotation, true);
     mBarrel->setOrientation(rotation);
 
     // If barrel is in position, fire the projectile
-    if (mTurret->getOrientation().equals(turretRotation, Ogre::Degree(1.0f)) &&
-        mBarrel->getOrientation().equals(barrelRotation, Ogre::Degree(1.0f)) &&
+    if (mTurret->getOrientation().equals(turretRotation, Ogre::Degree(0.01f)) &&
+        mBarrel->getOrientation().equals(barrelRotation, Ogre::Degree(0.01f)) &&
         mPool.CurrentSize() < mPool.MaxSize() &&
         IsReady())
     {
