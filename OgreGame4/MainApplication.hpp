@@ -22,46 +22,46 @@
 #include "Barrel.hpp"
 
 class MainApplication :
-	public Ogre::FrameListener,
-	public OIS::KeyListener,
-	public OIS::MouseListener,
-	public OgreBites::SdkTrayListener,
-	public IApplicationBehaviour
+    public Ogre::FrameListener,
+    public OIS::KeyListener,
+    public OIS::MouseListener,
+    public OgreBites::SdkTrayListener,
+    public IApplicationBehaviour
 {
 public:
-	MainApplication();
-	~MainApplication();
+    MainApplication();
+    ~MainApplication();
 
-	void Run();
+    void Run();
 
 private:
-	// FrameListener
-	bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
+    // FrameListener
+    bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
 
-	// KeyListener
-	bool keyPressed(const OIS::KeyEvent& ke) override;
-	bool keyReleased(const OIS::KeyEvent& ke) override;
+    // KeyListener
+    bool keyPressed(const OIS::KeyEvent& ke) override;
+    bool keyReleased(const OIS::KeyEvent& ke) override;
 
-	// MouseListener
-	bool mouseMoved(const OIS::MouseEvent& me) override;
-	bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
-	bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
+    // MouseListener
+    bool mouseMoved(const OIS::MouseEvent& me) override;
+    bool mousePressed(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
+    bool mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonID id) override;
 
-	// Application specific behaviours
-	void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera) override;
-	void SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera* camera) override;
-	void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager* trayMgr) override;
-	void SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera) override;
+    // Application specific behaviours
+    void SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera) override;
+    void SetupViewport(Ogre::RenderWindow* const window, Ogre::Camera* camera) override;
+    void SetupTrayUI(Ogre::SceneManager* const sceneMgr, OgreBites::SdkTrayManager* trayMgr) override;
+    void SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camera* camera) override;
 
-	GraphicsContext mGraphicsContext;
-	PhysicsContext mPhysicsContext;
-	RTSController mRTSController;
-	ObjectSelector mObjectSelector;
-	Graph mWorld;
-	PathFinding mPathFinder;
-	std::vector<MovableObject*> mMovableObjects;
+    GraphicsContext mGraphicsContext;
+    PhysicsContext mPhysicsContext;
+    RTSController mRTSController;
+    ObjectSelector mObjectSelector;
+    Graph mWorld;
+    PathFinding mPathFinder;
+    std::vector<MovableObject*> mMovableObjects;
 
-	Ogre::SceneNode* mWorldGridNode;
+    Ogre::SceneNode* mWorldGridNode;
 
     /*btRigidBody* mProjectile;
     float gravity;

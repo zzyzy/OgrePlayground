@@ -10,11 +10,11 @@ Graph::Graph()
 	/*std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dis(0, TOTAL_NODES);
-	int index = dis(gen);
+	int index = dis(gen);*/
 
 	mDiagonalCost = sqrt(SQUARE_SIZE*SQUARE_SIZE + SQUARE_SIZE*SQUARE_SIZE);
 
-	for (auto i = 0; i < 50; )
+	/*for (auto i = 0; i < 50; )
 	{
 		if (mGrid[index] == 1)
 		{

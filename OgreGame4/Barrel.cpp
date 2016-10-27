@@ -8,7 +8,9 @@
 #include "OgreEuler.hpp"
 #include "Shell.hpp"
 
-Barrel::Barrel(Ogre::SceneNode* barrel,
+Barrel::Barrel(Ogre::SceneNode* turret,
+               Ogre::SceneNode* barrel,
+               Ogre::SceneNode* nozzle,
                Ogre::SceneManager* world,
                PhysicsContext* physics,
                const size_t& maxPoolSize,
@@ -17,7 +19,9 @@ Barrel::Barrel(Ogre::SceneNode* barrel,
                const float& shellMass,
                const float& blastForce,
                const float& blastRadius) :
+    mTurret(turret),
     mBarrel(barrel),
+    mNozzle(nozzle),
     mWorld(world),
     mPhysics(physics),
     mPool(maxPoolSize),
@@ -30,7 +34,12 @@ Barrel::Barrel(Ogre::SceneNode* barrel,
     mProjectileVelocity(Ogre::Vector3::ZERO),
     mProjectileGravity(0.0f)
 {
-    assert(barrel != nullptr && world != nullptr && physics != nullptr && maxPoolSize > 0);
+    assert(turret != nullptr &&
+        barrel != nullptr &&
+        nozzle != nullptr &&
+        world != nullptr &&
+        physics != nullptr &&
+        maxPoolSize > 0);
 }
 
 void Barrel::Update(const float& deltaTime)
@@ -47,28 +56,37 @@ void Barrel::Update(const float& deltaTime)
 
     // Only adjust the pitch of the barrel
     Ogre::Quaternion lookRotation = LookRotation(mProjectileVelocity.normalisedCopy(), Ogre::Vector3::UNIT_Y);
+
     Ogre::Euler angles = Ogre::Euler(lookRotation);
+    angles.setPitch(mTurret->getOrientation().getPitch());
+    auto turretRotation = angles;
+
+    angles = Ogre::Euler(lookRotation);
     angles.setYaw(mBarrel->getOrientation().getYaw());
     angles.setRoll(mBarrel->getOrientation().getRoll());
-    lookRotation = angles;
-    Ogre::Quaternion rotation = Ogre::Quaternion::Slerp(5.0f * deltaTime, mBarrel->getOrientation(), lookRotation);
+    auto barrelRotation = angles;
+
+    Ogre::Quaternion rotation = Ogre::Quaternion::Slerp(5.0f * deltaTime, mTurret->getOrientation(), turretRotation);
+    mTurret->setOrientation(rotation);
+
+    rotation = Ogre::Quaternion::Slerp(5.0f * deltaTime, mBarrel->getOrientation(), barrelRotation);
     mBarrel->setOrientation(rotation);
 
     // If barrel is in position, fire the projectile
-    if (mBarrel->getOrientation().equals(lookRotation, Ogre::Degree(1.0f)) &&
+    if (mTurret->getOrientation().equals(turretRotation, Ogre::Degree(1.0f)) &&
+        mBarrel->getOrientation().equals(barrelRotation, Ogre::Degree(1.0f)) &&
         mPool.CurrentSize() < mPool.MaxSize() &&
         IsReady())
     {
         auto entity = mWorld->createEntity("sphere.mesh");
         auto node = mWorld->getRootSceneNode()->createChildSceneNode();
-        auto shape = new btBoxShape(btVector3(2, 2, 2));
-        auto position = mBarrel->getPosition();
+        auto shape = new btBoxShape(btVector3(1, 1, 1));
+        auto position = mNozzle->_getDerivedPosition();
         btTransform transform;
 
-        position.y += 2.0f;
         entity->setCastShadows(true);
         node->attachObject(entity);
-        node->scale(0.02f, 0.02f, 0.02f);
+        node->scale(0.01f, 0.01f, 0.01f);
         node->setPosition(position);
         transform.setIdentity();
         transform.setOrigin(Convert(node->getPosition()));
@@ -96,11 +114,10 @@ void Barrel::FireAt(const Ogre::Vector3& target)
     {
         Ogre::Vector3 s0;
         float g;
-        auto position = mBarrel->getPosition();
-        position.y += 2.0f;
+        auto position = mNozzle->_getDerivedPosition();
 
         // Calculate the projectile velocity
-        bool hasSolution = ProjectileMath::SolveBallisticArcLateral(position, mShellSpeed, target, 10.0f, &s0, &g);
+        bool hasSolution = ProjectileMath::SolveBallisticArcLateral(position, mShellSpeed, target, position.y + 1.0f, &s0, &g);
 
         if (hasSolution)
         {

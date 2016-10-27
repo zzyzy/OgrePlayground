@@ -22,15 +22,17 @@
 class Barrel
 {
 public:
-    Barrel(Ogre::SceneNode* barrel,
+    Barrel(Ogre::SceneNode* turret,
+           Ogre::SceneNode* barrel,
+           Ogre::SceneNode* nozzle,
            Ogre::SceneManager* world,
            PhysicsContext* physics,
            const size_t& maxPoolSize,
            const float& delayBetweenShots = 1.0f,
-           const float& shellSpeed = 50.0f,
-           const float& shellMass = 1.0f,
+           const float& shellSpeed = 250.0f,
+           const float& shellMass = 2.0f,
            const float& blastForce = 0.5f,
-           const float& blastRadius = 3.0f);
+           const float& blastRadius = 5.0f);
 
     void Update(const float& deltaTime);
 
@@ -39,7 +41,9 @@ public:
     void FireAt(const Ogre::Vector3& target);
 
 private:
+    Ogre::SceneNode* mTurret;
     Ogre::SceneNode* mBarrel;
+    Ogre::SceneNode* mNozzle;
     Ogre::SceneManager* mWorld;
     PhysicsContext* mPhysics;
     PoolManager mPool;

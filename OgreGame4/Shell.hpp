@@ -25,7 +25,7 @@ public:
           PhysicsContext* physics,
           const float& blastForce,
           const float& blastRadius,
-          const float& blastDuration = 1.0f) :
+          const float& blastDuration = 2.0f) :
         Projectile(rbody, physics),
         mWorld(world),
         mBlastForce(blastForce),
@@ -75,11 +75,22 @@ public:
 
         if (mRBody)
         {
-            if (mRBody->getCenterOfMassPosition().y() < 2.0f)
+            if (mRBody->getCenterOfMassPosition().y() < 1.0f)
             {
                 assert(mBlastCollider == nullptr);
+
                 btTransform startTrans = mRBody->getCenterOfMassTransform();
                 btCollisionShape* shape = new btSphereShape(mBlastRadius);
+
+                // Visualize blast radius
+                /*
+                auto mDummyEntity = mWorld->createEntity("sphere.mesh");
+                auto mDummyNode = mWorld->getRootSceneNode()->createChildSceneNode();
+                mDummyNode->attachObject(mDummyEntity);
+                mDummyNode->setPosition(Convert(startTrans.getOrigin()));
+                mDummyNode->scale(0.01f * mBlastRadius, 0.01f * mBlastRadius, 0.01f * mBlastRadius);
+                */
+
                 mBlastCollider = mPhysics->CreateGhostObject(startTrans, shape, btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::DefaultFilter);
                 mBlastCollider->setCollisionFlags(mBlastCollider->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
@@ -92,7 +103,7 @@ public:
                 mParticleNode = mWorld->getRootSceneNode()->createChildSceneNode();
                 mParticleNode->attachObject(mParticleSystem);
                 mParticleNode->setPosition(Convert(mRBody->getCenterOfMassPosition()));
-                mParticleNode->translate(0, 2, 0);
+                mParticleNode->translate(0, 4, 0);
                 // fast forward to the point where the particle has been emitted
                 mParticleSystem->fastForward(4.6f);
 
