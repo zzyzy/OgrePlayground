@@ -9,6 +9,7 @@
 #include "MainApplication.hpp"
 #include <random>
 #include "ProjectileMath.hpp"
+#include "OgreEuler.hpp"
 
 MainApplication::MainApplication() :
 	mWorldGridNode(nullptr)
@@ -22,7 +23,7 @@ MainApplication::~MainApplication()
 void MainApplication::Run()
 {
 	mPhysicsContext.Setup();
-	mGraphicsContext.Setup("OgreGame3", this, this, this, this, this);
+	mGraphicsContext.Setup("OgreGame4", this, this, this, this, this);
 }
 
 bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -36,6 +37,14 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 		obj->Update(4, evt.timeSinceLastFrame);
 	}
+
+    Ogre::Quaternion lookRotation = LookRotation(mLaunchVector, Ogre::Vector3::UNIT_Y);
+    Ogre::Euler angles = Ogre::Euler(lookRotation);
+    angles.setYaw(Ogre::Degree(0));
+    angles.setRoll(Ogre::Degree(0));
+    lookRotation = angles;
+    Ogre::Quaternion quat = Ogre::Quaternion::Slerp(2.0f * evt.timeSinceLastFrame, mBarrelNode->getOrientation(), lookRotation);
+    mBarrelNode->setOrientation(quat);
 
 	mPhysicsContext.Update(evt.timeSinceLastFrame);
 	if (!mRTSController.CaptureRenderQueue(evt)) return false;
@@ -184,7 +193,7 @@ void MainApplication::SetupCamera(Ogre::SceneManager* const sceneMgr, Ogre::Came
 {
 	auto cameraNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 	cameraNode->attachObject(camera);
-	cameraNode->setPosition(0, 120, 0);
+	cameraNode->setPosition(0, 150, 0);
 	cameraNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
 	mRTSController.AttachCamera(cameraNode);
 	mObjectSelector.Setup(sceneMgr, camera);
@@ -481,6 +490,18 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
         mMovableObjects.push_back(node);
     }
 
+    // Tank barrel
+	{
+	    auto entity = sceneMgr->createEntity("lpbarrel.mesh");
+        entity->setCastShadows(true);
+        mBarrelNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
+        auto node = mBarrelNode->createChildSceneNode();
+        node->attachObject(entity);
+        node->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+        node->scale(0.5f, 0.5f, 0.5f);
+        mBarrelNode->translate(-70, 0, -50);
+	}
+
     // Test projectile
 	{
 	    auto entity = sceneMgr->createEntity("sphere.mesh");
@@ -508,6 +529,7 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
             btVector3 vel = Convert(s0);
             rigidBody->setLinearVelocity(vel);
             rigidBody->setGravity(btVector3(0, -gravity, 0));
+            mLaunchVector = s0;
         }
 	}
 

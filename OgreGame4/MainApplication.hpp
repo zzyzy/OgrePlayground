@@ -61,6 +61,9 @@ private:
 	std::vector<MovableObject*> mMovableObjects;
 
 	Ogre::SceneNode* mWorldGridNode;
+
+    Ogre::SceneNode* mBarrelNode;
+    Ogre::Vector3 mLaunchVector;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

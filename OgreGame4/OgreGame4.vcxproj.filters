@@ -34,6 +34,15 @@
     <Filter Include="Source Files\Contexts">
       <UniqueIdentifier>{a198152e-e459-4897-85bd-fddc57bc21b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{9cc882be-27bd-4be2-a7eb-9d7bea437e79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{043d1e30-6829-4d5d-8c09-2be370b6cc60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interfaces">
+      <UniqueIdentifier>{294dabbd-c9a4-4050-9982-46d4075be826}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -49,9 +58,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ObjectSelector.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MovableObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Connection.h">
@@ -81,8 +87,14 @@
     <ClInclude Include="PhysicsContext.hpp">
       <Filter>Header Files\Contexts</Filter>
     </ClInclude>
+    <ClInclude Include="MovableObject.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
     <ClInclude Include="IApplicationBehaviour.hpp">
-      <Filter>Header Files\Contexts</Filter>
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="OgreEuler.hpp">
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,9 +111,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ObjectSelector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MovableObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Connection.cpp">
@@ -130,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="PhysicsContext.cpp">
       <Filter>Source Files\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableObject.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
