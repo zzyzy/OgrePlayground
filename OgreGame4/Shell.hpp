@@ -94,7 +94,7 @@ public:
                 mParticleNode->setPosition(Convert(mRBody->getCenterOfMassPosition()));
                 mParticleNode->translate(0, 2, 0);
                 // fast forward to the point where the particle has been emitted
-                mParticleSystem->fastForward(4.6);
+                mParticleSystem->fastForward(4.6f);
 
                 // Remove the projectile
                 auto node = static_cast<PhysicsContext::MotionState*>(mRBody->getMotionState())->GetNode();
