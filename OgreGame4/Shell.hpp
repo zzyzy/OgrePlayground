@@ -1,4 +1,18 @@
+/*
+ * Tank shell
+ * 
+ * Copyright (C) 2016 Zhen Zhi Lee
+ * Written by Zhen Zhi Lee (leezhenzhi@gmail.com)
+ * 
+ * A tank shell that launches from the tank barrel.
+ * Explodes on impact and dealing damage to nearby
+ * objects based on the distance between the object
+ * and the impact point.
+ */
+
 #pragma once
+#ifndef __SHELL_HPP__
+#define __SHELL_HPP__
 
 #include "Projectile.hpp"
 #include "IPoolObject.hpp"
@@ -23,7 +37,7 @@ public:
         mParticleSystem(nullptr),
         mParticleNode(nullptr)
     {
-        assert(world != nullptr);
+        assert(rbody != nullptr && world != nullptr && physics != nullptr);
     }
 
     Shell(const Shell& shell) :
@@ -82,6 +96,7 @@ public:
                 // fast forward to the point where the particle has been emitted
                 mParticleSystem->fastForward(4.6);
 
+                // Remove the projectile
                 auto node = static_cast<PhysicsContext::MotionState*>(mRBody->getMotionState())->GetNode();
                 auto entity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
                 node->detachAllObjects();
@@ -145,3 +160,5 @@ private:
     Ogre::ParticleSystem* mParticleSystem;
     Ogre::SceneNode* mParticleNode;
 };
+
+#endif // __SHELL_HPP__

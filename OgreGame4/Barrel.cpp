@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2016 Zhen Zhi Lee
+ * Written by Zhen Zhi Lee (leezhenzhi@gmail.com)
+ */
+
 #include "Barrel.hpp"
 #include "ProjectileMath.hpp"
 #include "OgreEuler.hpp"
@@ -37,8 +42,10 @@ void Barrel::Update(const float& deltaTime)
 
     mPool.Update(deltaTime);
 
+    // If there's no calculated projectile velocity, skip the rest of the operation
     if (mProjectileVelocity == Ogre::Vector3::ZERO) return;
 
+    // Only adjust the pitch of the barrel
     Ogre::Quaternion lookRotation = LookRotation(mProjectileVelocity.normalisedCopy(), Ogre::Vector3::UNIT_Y);
     Ogre::Euler angles = Ogre::Euler(lookRotation);
     angles.setYaw(mBarrel->getOrientation().getYaw());
@@ -47,6 +54,7 @@ void Barrel::Update(const float& deltaTime)
     Ogre::Quaternion rotation = Ogre::Quaternion::Slerp(5.0f * deltaTime, mBarrel->getOrientation(), lookRotation);
     mBarrel->setOrientation(rotation);
 
+    // If barrel is in position, fire the projectile
     if (mBarrel->getOrientation().equals(lookRotation, Ogre::Degree(1.0f)) &&
         mPool.CurrentSize() < mPool.MaxSize() &&
         IsReady())
@@ -91,6 +99,7 @@ void Barrel::FireAt(const Ogre::Vector3& target)
         auto position = mBarrel->getPosition();
         position.y += 2.0f;
 
+        // Calculate the projectile velocity
         bool hasSolution = ProjectileMath::SolveBallisticArcLateral(position, mShellSpeed, target, 10.0f, &s0, &g);
 
         if (hasSolution)

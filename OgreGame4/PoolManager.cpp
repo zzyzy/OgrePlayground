@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2016 Zhen Zhi Lee
+ * Written by Zhen Zhi Lee (leezhenzhi@gmail.com)
+ */
+
 #include "PoolManager.hpp"
 
 PoolManager::PoolManager(Ogre::SceneManager* world, PhysicsContext* physics) :
@@ -8,7 +13,7 @@ PoolManager::PoolManager(Ogre::SceneManager* world, PhysicsContext* physics) :
     assert(world != nullptr && physics != nullptr);
 }
 
-PoolManager::PoolManager(Ogre::SceneManager* world, PhysicsContext* physics, size_t maxPoolSize) :
+PoolManager::PoolManager(Ogre::SceneManager* world, PhysicsContext* physics, const size_t& maxPoolSize) :
     mWorld(world),
     mPhysics(physics),
     mMaxPoolSize(maxPoolSize)

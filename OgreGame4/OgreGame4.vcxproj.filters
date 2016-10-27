@@ -19,9 +19,6 @@
     <Filter Include="Header Files\Math">
       <UniqueIdentifier>{84c9d1d5-c6f3-4bca-98a3-1d32d6b64d74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Math">
-      <UniqueIdentifier>{fb1d2a0f-b072-4f2b-800e-62828c94b8fb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Pathfinding">
       <UniqueIdentifier>{fb4cde00-3812-45db-b95c-b51436240d3e}</UniqueIdentifier>
     </Filter>
@@ -151,12 +148,6 @@
     </ClCompile>
     <ClCompile Include="Utilities.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="ProjectileMath.cpp">
-      <Filter>Source Files\Math</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsContext.cpp">
       <Filter>Source Files\Contexts</Filter>

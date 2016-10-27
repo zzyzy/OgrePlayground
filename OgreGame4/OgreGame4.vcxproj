@@ -111,7 +111,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Barrel.cpp" />
-    <ClCompile Include="Math.cpp" />
     <ClCompile Include="PhysicsContext.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="Graph.cpp" />
@@ -123,7 +122,6 @@
     <ClCompile Include="PathFinding.cpp" />
     <ClCompile Include="PoolManager.cpp" />
     <ClCompile Include="Program.cpp" />
-    <ClCompile Include="ProjectileMath.cpp" />
     <ClCompile Include="RTSController.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
