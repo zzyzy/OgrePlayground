@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -69,7 +69,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -85,7 +85,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Barrel.hpp" />
     <ClInclude Include="IApplicationBehaviour.hpp" />
+    <ClInclude Include="IPhysicsObject.hpp" />
+    <ClInclude Include="IPoolObject.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="OgreEuler.hpp" />
     <ClInclude Include="PhysicsContext.hpp" />
@@ -97,13 +100,17 @@
     <ClInclude Include="ObjectSelector.hpp" />
     <ClInclude Include="GraphicsContext.hpp" />
     <ClInclude Include="PathFinding.h" />
+    <ClInclude Include="PoolManager.hpp" />
+    <ClInclude Include="Projectile.hpp" />
     <ClInclude Include="ProjectileMath.hpp" />
     <ClInclude Include="RTSController.hpp" />
+    <ClInclude Include="Shell.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utilities.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Barrel.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="PhysicsContext.cpp" />
     <ClCompile Include="Connection.cpp" />
@@ -114,6 +121,7 @@
     <ClCompile Include="ObjectSelector.cpp" />
     <ClCompile Include="GraphicsContext.cpp" />
     <ClCompile Include="PathFinding.cpp" />
+    <ClCompile Include="PoolManager.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="ProjectileMath.cpp" />
     <ClCompile Include="RTSController.cpp" />

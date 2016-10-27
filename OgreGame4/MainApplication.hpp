@@ -19,6 +19,7 @@
 #include "PhysicsContext.hpp"
 #include "RTSController.hpp"
 #include "ObjectSelector.hpp"
+#include "Barrel.hpp"
 
 class MainApplication :
 	public Ogre::FrameListener,
@@ -62,8 +63,14 @@ private:
 
 	Ogre::SceneNode* mWorldGridNode;
 
+    /*btRigidBody* mProjectile;
+    float gravity;
     Ogre::SceneNode* mBarrelNode;
-    Ogre::Vector3 mLaunchVector;
+    Ogre::Vector3 mLaunchVelocity;
+    bool fired;
+    */
+
+    Barrel* mBarrel;
 };
 
 #endif // #ifndef __MAINAPPLICATION_HPP__

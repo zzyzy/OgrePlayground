@@ -43,6 +43,12 @@
     <Filter Include="Header Files\Interfaces">
       <UniqueIdentifier>{294dabbd-c9a4-4050-9982-46d4075be826}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Tank">
+      <UniqueIdentifier>{3bdfcaa9-fd8f-4e8b-bc28-eafa7aab4837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tank">
+      <UniqueIdentifier>{182c04e5-5858-4f2a-a097-21cd2a254faa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -96,6 +102,24 @@
     <ClInclude Include="OgreEuler.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
+    <ClInclude Include="PoolManager.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="IPhysicsObject.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Barrel.hpp">
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="Shell.hpp">
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="IPoolObject.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -142,6 +166,12 @@
     </ClCompile>
     <ClCompile Include="MovableObject.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="PoolManager.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Barrel.cpp">
+      <Filter>Source Files\Tank</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

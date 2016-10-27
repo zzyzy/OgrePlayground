@@ -8,16 +8,17 @@
 
 #include "MainApplication.hpp"
 #include <random>
-#include "ProjectileMath.hpp"
 #include "OgreEuler.hpp"
 
 MainApplication::MainApplication() :
-	mWorldGridNode(nullptr)
+	mWorldGridNode(nullptr),
+    mBarrel(nullptr)
 {
 }
 
 MainApplication::~MainApplication()
 {
+    delete mBarrel;
 }
 
 void MainApplication::Run()
@@ -38,13 +39,9 @@ bool MainApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		obj->Update(4, evt.timeSinceLastFrame);
 	}
 
-    Ogre::Quaternion lookRotation = LookRotation(mLaunchVector, Ogre::Vector3::UNIT_Y);
-    Ogre::Euler angles = Ogre::Euler(lookRotation);
-    angles.setYaw(Ogre::Degree(0));
-    angles.setRoll(Ogre::Degree(0));
-    lookRotation = angles;
-    Ogre::Quaternion quat = Ogre::Quaternion::Slerp(2.0f * evt.timeSinceLastFrame, mBarrelNode->getOrientation(), lookRotation);
-    mBarrelNode->setOrientation(quat);
+    mBarrel->FireAt(Ogre::Vector3(0, 0, 0));
+
+    mBarrel->Update(evt.timeSinceLastFrame);
 
 	mPhysicsContext.Update(evt.timeSinceLastFrame);
 	if (!mRTSController.CaptureRenderQueue(evt)) return false;
@@ -491,47 +488,18 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
     }
 
     // Tank barrel
-	{
-	    auto entity = sceneMgr->createEntity("lpbarrel.mesh");
+    {
+        auto entity = sceneMgr->createEntity("lpbarrel.mesh");
         entity->setCastShadows(true);
-        mBarrelNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
-        auto node = mBarrelNode->createChildSceneNode();
+        auto barrelNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
+        auto node = barrelNode->createChildSceneNode();
         node->attachObject(entity);
         node->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
         node->scale(0.5f, 0.5f, 0.5f);
-        mBarrelNode->translate(-70, 0, -50);
-	}
+        barrelNode->translate(-70, 0, -50);
 
-    // Test projectile
-	{
-	    auto entity = sceneMgr->createEntity("sphere.mesh");
-        entity->setCastShadows(true);
-        auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-        node->attachObject(entity);
-        node->scale(0.02f, 0.02f, 0.02f);
-        node->translate(-70, 0, -50);
-        auto position = node->getPosition();
-
-        auto shape = new btBoxShape(btVector3(2, 2, 2));
-
-        btTransform transform;
-        transform.setIdentity();
-        transform.setOrigin(Convert(position));
-
-        auto rigidBody = mPhysicsContext.CreateRigidBody(1, transform, shape, node);
-
-        auto target = Ogre::Vector3(0, 0, 0);
-        Ogre::Vector3 s0, s1;
-        float gravity;
-        bool hasSolution = ProjectileMath::SolveBallisticArcLateral(position, 150.0f, target, 5.0f, &s0, &gravity);
-        if (hasSolution)
-        {
-            btVector3 vel = Convert(s0);
-            rigidBody->setLinearVelocity(vel);
-            rigidBody->setGravity(btVector3(0, -gravity, 0));
-            mLaunchVector = s0;
-        }
-	}
+        mBarrel = new Barrel(barrelNode, sceneMgr, &mPhysicsContext, 5);
+    }
 
 	// Build world grid
 	auto worldGridColour = Ogre::ColourValue(51 / 255.0f, 255 / 255.0f, 247 / 255.0f);
