@@ -16,6 +16,7 @@
 #ifndef __BARREL_HPP__
 #define __BARREL_HPP__
 
+#include "PhysicsContext.hpp"
 #include "PoolManager.hpp"
 
 class Barrel

@@ -5,20 +5,10 @@
 
 #include "PoolManager.hpp"
 
-PoolManager::PoolManager(Ogre::SceneManager* world, PhysicsContext* physics) :
-    mWorld(world),
-    mPhysics(physics),
-    mMaxPoolSize(5)
-{
-    assert(world != nullptr && physics != nullptr);
-}
-
-PoolManager::PoolManager(Ogre::SceneManager* world, PhysicsContext* physics, const size_t& maxPoolSize) :
-    mWorld(world),
-    mPhysics(physics),
+PoolManager::PoolManager(const size_t& maxPoolSize) :
     mMaxPoolSize(maxPoolSize)
 {
-    assert(world != nullptr && physics != nullptr && maxPoolSize > 0);
+    assert(maxPoolSize > 0);
 }
 
 PoolManager::~PoolManager()
@@ -40,6 +30,7 @@ void PoolManager::Update(const float& deltaTime)
     for (auto o : mPool)
     {
         o->Update(deltaTime);
+
         if (o->IsDisposable())
         {
             o->Dispose();
@@ -69,6 +60,7 @@ void PoolManager::Add(IPoolObject* object)
 void PoolManager::Remove(IPoolObject* object)
 {
     assert(object != nullptr);
+    delete object;
     mPool.erase(object);
 }
 

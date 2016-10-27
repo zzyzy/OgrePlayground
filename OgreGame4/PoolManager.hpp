@@ -12,15 +12,12 @@
 #ifndef __POOL_MANAGER_HPP__
 #define __POOL_MANAGER_HPP__
 
-#include "PhysicsContext.hpp"
 #include "IPoolObject.hpp"
 
 class PoolManager
 {
 public:
-    PoolManager(Ogre::SceneManager* world, PhysicsContext* physics);
-
-    PoolManager(Ogre::SceneManager* world, PhysicsContext* physics, const size_t& maxPoolSize);
+    PoolManager(const size_t& maxPoolSize = 5);
 
     ~PoolManager();
 
@@ -35,8 +32,6 @@ public:
     size_t MaxSize() const;
 
 private:
-    Ogre::SceneManager* mWorld;
-    PhysicsContext* mPhysics;
     size_t mMaxPoolSize;
     std::set<IPoolObject*> mPool;
 };
