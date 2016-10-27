@@ -88,6 +88,7 @@
     <ClInclude Include="Barrel.hpp" />
     <ClInclude Include="CollisionMasks.hpp" />
     <ClInclude Include="IApplicationBehaviour.hpp" />
+    <ClInclude Include="IDamageableObject.hpp" />
     <ClInclude Include="IPhysicsObject.hpp" />
     <ClInclude Include="IPoolObject.hpp" />
     <ClInclude Include="Math.hpp" />

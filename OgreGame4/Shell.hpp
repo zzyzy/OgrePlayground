@@ -17,6 +17,7 @@
 #include "Projectile.hpp"
 #include "IPoolObject.hpp"
 #include "CollisionMasks.hpp"
+#include "IDamageableObject.hpp"
 
 class Shell : public Projectile, public IPoolObject
 {
@@ -129,9 +130,19 @@ public:
 
             for (auto it = collidedObjects.begin(); it != collidedObjects.end(); ++it)
             {
+                auto rbody = static_cast<btRigidBody*>(*it);
                 auto rayFromWorld = mBlastCollider->getWorldTransform().getOrigin();
                 auto rayToWorld = static_cast<btRigidBody*>(*it)->getCenterOfMassPosition();
                 auto impulse = rayToWorld - rayFromWorld;
+                auto node = static_cast<PhysicsContext::MotionState*>(rbody->getMotionState())->GetNode();
+                auto entity = static_cast<Ogre::MovableObject*>(node->getAttachedObject(0));
+                auto damageableObject = dynamic_cast<IDamageableObject*>(entity);
+
+                if (damageableObject)
+                {
+                    auto damage = (rayToWorld - rayFromWorld).length() * 1.0f;
+                    damageableObject->ApplyDamage(damage);
+                }
 
                 impulse.normalize();
                 impulse *= mBlastForce;
