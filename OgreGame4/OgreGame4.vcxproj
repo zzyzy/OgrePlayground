@@ -86,6 +86,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Barrel.hpp" />
+    <ClInclude Include="CollisionMasks.hpp" />
     <ClInclude Include="IApplicationBehaviour.hpp" />
     <ClInclude Include="IPhysicsObject.hpp" />
     <ClInclude Include="IPoolObject.hpp" />

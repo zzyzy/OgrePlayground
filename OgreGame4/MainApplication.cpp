@@ -9,6 +9,7 @@
 #include "MainApplication.hpp"
 #include <random>
 #include "OgreEuler.hpp"
+#include "CollisionMasks.hpp"
 
 MainApplication::MainApplication() :
     mWorldGridNode(nullptr),
@@ -258,7 +259,12 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
     btBoxShape* groundShape = new btBoxShape(btVector3((GRID_DIMENSION * SQUARE_SIZE) / 2.0f, 5, (GRID_DIMENSION * SQUARE_SIZE) / 2.0f));
     groundTransform.setIdentity();
     groundTransform.setOrigin(btVector3(0, -5, 0));
-    auto groundRigidBody = mPhysicsContext.CreateRigidBody(0, groundTransform, groundShape, groundNode);
+    auto groundRigidBody = mPhysicsContext.CreateRigidBody(0, groundTransform, groundShape, groundNode,
+                                                           COL_GROUND,
+                                                           COL_TANK |
+                                                           COL_POWERUP |
+                                                           COL_PROJECTILE |
+                                                           COL_ENVIRONMENT_OBJECT);
     groundRigidBody->setFriction(1);
 
     //// Obstacles
@@ -373,93 +379,111 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
 
     // Place objects in scene
     {
-    // Create a row of boxes
-    for (int i = -20; i <= 20; i += 5)
-    {
-        // Create cube mesh with unique name
-        Ogre::Entity* cube = sceneMgr->createEntity("cube.mesh");
-        cube->setMaterialName("Examples/BumpyMetal");
-        cube->setCastShadows(true);
-        cube->setQueryFlags(0);
-        auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-        node->attachObject(cube);
-        // Scale it to appropriate size
-        node->scale(0.04f, 0.04f, 0.04f);
+        // Create a row of boxes
+        for (int i = -20; i <= 20; i += 5)
+        {
+            // Create cube mesh with unique name
+            Ogre::Entity* cube = sceneMgr->createEntity("cube.mesh");
+            cube->setMaterialName("Examples/BumpyMetal");
+            cube->setCastShadows(true);
+            cube->setQueryFlags(0);
+            auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+            node->attachObject(cube);
+            // Scale it to appropriate size
+            node->scale(0.04f, 0.04f, 0.04f);
 
-        // Create a collision shape
-        // Note that the size should match the size of the object that will be displayed
-        btCollisionShape* collisionShape = new btBoxShape(btVector3(2, 2, 2));
+            // Create a collision shape
+            // Note that the size should match the size of the object that will be displayed
+            btCollisionShape* collisionShape = new btBoxShape(btVector3(2, 2, 2));
 
-        // The object's starting transformation
-        btTransform startingTrans;
-        startingTrans.setIdentity();
-        startingTrans.setOrigin(btVector3(i, 10, 10));
-        startingTrans.setRotation(btQuaternion(0, 0, 0, 1));
+            // The object's starting transformation
+            btTransform startingTrans;
+            startingTrans.setIdentity();
+            startingTrans.setOrigin(btVector3(i, 10, 10));
+            startingTrans.setRotation(btQuaternion(0, 0, 0, 1));
 
-        // Create the rigid body
-        btRigidBody* rigidBody = mPhysicsContext.CreateRigidBody(1.0f, startingTrans, collisionShape, node);
+            // Create the rigid body
+            btRigidBody* rigidBody = mPhysicsContext.CreateRigidBody(1.0f, startingTrans, collisionShape, node,
+                                                                     COL_ENVIRONMENT_OBJECT,
+                                                                     COL_TANK |
+                                                                     COL_GROUND |
+                                                                     COL_EXPLOSION |
+                                                                     COL_PROJECTILE |
+                                                                     COL_ENVIRONMENT_OBJECT);
 
-        // Set the rigid body's friction
-        rigidBody->setFriction(0.9f);
-    }
+            // Set the rigid body's friction
+            rigidBody->setFriction(0.9f);
+        }
 
-    for (int i = -20; i <= 20; i += 5)
-    {
-        // Create cube mesh with unique name
-        Ogre::Entity* cube = sceneMgr->createEntity("cube.mesh");
-        cube->setMaterialName("Examples/Checker");
-        cube->setCastShadows(true);
-        cube->setQueryFlags(0);
-        auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-        node->attachObject(cube);
-        // Scale it to appropriate size
-        node->scale(0.06f, 0.06f, 0.06f);
+        for (int i = -20; i <= 20; i += 5)
+        {
+            // Create cube mesh with unique name
+            Ogre::Entity* cube = sceneMgr->createEntity("cube.mesh");
+            cube->setMaterialName("Examples/Checker");
+            cube->setCastShadows(true);
+            cube->setQueryFlags(0);
+            auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+            node->attachObject(cube);
+            // Scale it to appropriate size
+            node->scale(0.06f, 0.06f, 0.06f);
 
-        // Create a collision shape
-        // Note that the size should match the size of the object that will be displayed
-        btCollisionShape* collisionShape = new btBoxShape(btVector3(3, 3, 3));
+            // Create a collision shape
+            // Note that the size should match the size of the object that will be displayed
+            btCollisionShape* collisionShape = new btBoxShape(btVector3(3, 3, 3));
 
-        // The object's starting transformation
-        btTransform startingTrans;
-        startingTrans.setIdentity();
-        startingTrans.setOrigin(btVector3(i, 10, -10));
-        startingTrans.setRotation(btQuaternion(0, 0, 0, 1));
+            // The object's starting transformation
+            btTransform startingTrans;
+            startingTrans.setIdentity();
+            startingTrans.setOrigin(btVector3(i, 10, -10));
+            startingTrans.setRotation(btQuaternion(0, 0, 0, 1));
 
-        // Create the rigid body
-        btRigidBody* rigidBody = mPhysicsContext.CreateRigidBody(2.0f, startingTrans, collisionShape, node);
+            // Create the rigid body
+            btRigidBody* rigidBody = mPhysicsContext.CreateRigidBody(2.0f, startingTrans, collisionShape, node,
+                                                                     COL_ENVIRONMENT_OBJECT,
+                                                                     COL_TANK |
+                                                                     COL_GROUND |
+                                                                     COL_EXPLOSION |
+                                                                     COL_PROJECTILE |
+                                                                     COL_ENVIRONMENT_OBJECT);
 
-        // Set the rigid body's friction
-        rigidBody->setFriction(1.8f);
-    }
+            // Set the rigid body's friction
+            rigidBody->setFriction(1.8f);
+        }
 
-    for (int i = -20; i <= 20; i += 5)
-    {
-        // Create cube mesh with unique name
-        Ogre::Entity* cube = sceneMgr->createEntity("cube.mesh");
-        cube->setMaterialName("Examples/TextureEffect3");
-        cube->setCastShadows(true);
-        cube->setQueryFlags(0);
-        auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-        node->attachObject(cube);
-        // Scale it to appropriate size
-        node->scale(0.08f, 0.08f, 0.08f);
+        for (int i = -20; i <= 20; i += 5)
+        {
+            // Create cube mesh with unique name
+            Ogre::Entity* cube = sceneMgr->createEntity("cube.mesh");
+            cube->setMaterialName("Examples/TextureEffect3");
+            cube->setCastShadows(true);
+            cube->setQueryFlags(0);
+            auto node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+            node->attachObject(cube);
+            // Scale it to appropriate size
+            node->scale(0.08f, 0.08f, 0.08f);
 
-        // Create a collision shape
-        // Note that the size should match the size of the object that will be displayed
-        btCollisionShape* collisionShape = new btBoxShape(btVector3(4, 4, 4));
+            // Create a collision shape
+            // Note that the size should match the size of the object that will be displayed
+            btCollisionShape* collisionShape = new btBoxShape(btVector3(4, 4, 4));
 
-        // The object's starting transformation
-        btTransform startingTrans;
-        startingTrans.setIdentity();
-        startingTrans.setOrigin(btVector3(i, 10, -20));
-        startingTrans.setRotation(btQuaternion(0, 0, 0, 1));
+            // The object's starting transformation
+            btTransform startingTrans;
+            startingTrans.setIdentity();
+            startingTrans.setOrigin(btVector3(i, 10, -20));
+            startingTrans.setRotation(btQuaternion(0, 0, 0, 1));
 
-        // Create the rigid body
-        btRigidBody* rigidBody = mPhysicsContext.CreateRigidBody(3.0f, startingTrans, collisionShape, node);
+            // Create the rigid body
+            btRigidBody* rigidBody = mPhysicsContext.CreateRigidBody(3.0f, startingTrans, collisionShape, node,
+                                                                     COL_ENVIRONMENT_OBJECT,
+                                                                     COL_TANK |
+                                                                     COL_GROUND |
+                                                                     COL_EXPLOSION |
+                                                                     COL_PROJECTILE |
+                                                                     COL_ENVIRONMENT_OBJECT);
 
-        // Set the rigid body's friction
-        rigidBody->setFriction(2.7f);
-    }
+            // Set the rigid body's friction
+            rigidBody->setFriction(2.7f);
+        }
     }
 
     // Tank

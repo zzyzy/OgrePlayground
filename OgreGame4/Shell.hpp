@@ -16,6 +16,7 @@
 
 #include "Projectile.hpp"
 #include "IPoolObject.hpp"
+#include "CollisionMasks.hpp"
 
 class Shell : public Projectile, public IPoolObject
 {
@@ -75,7 +76,9 @@ public:
 
         if (mRBody)
         {
-            if (mRBody->getCenterOfMassPosition().y() < 1.0f)
+            auto collidedObjects = mPhysics->GetAllCollidedObjects(mRBody);
+
+            if (mRBody->getCenterOfMassPosition().y() < 1.0f || !collidedObjects.empty())
             {
                 assert(mBlastCollider == nullptr);
 
@@ -91,7 +94,10 @@ public:
                 mDummyNode->scale(0.01f * mBlastRadius, 0.01f * mBlastRadius, 0.01f * mBlastRadius);
                 */
 
-                mBlastCollider = mPhysics->CreateGhostObject(startTrans, shape, btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::DefaultFilter);
+                mBlastCollider = mPhysics->CreateGhostObject(startTrans, shape,
+                                                             COL_EXPLOSION,
+                                                             COL_TANK |
+                                                             COL_ENVIRONMENT_OBJECT);
                 mBlastCollider->setCollisionFlags(mBlastCollider->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
                 // create a particle system named explosions using the explosionTemplate

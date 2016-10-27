@@ -64,6 +64,15 @@ void Barrel::Update(const float& deltaTime)
     angles = Ogre::Euler(lookRotation);
     angles.setYaw(mBarrel->getOrientation().getYaw());
     angles.setRoll(mBarrel->getOrientation().getRoll());
+    // Clamp pitch angle for barrel
+    if (-lookRotation.getPitch() > Ogre::Degree(30))
+    {
+        angles.setPitch(Ogre::Degree(-30));
+    }
+    else if (-lookRotation.getPitch() < Ogre::Degree(0))
+    {
+        angles.setPitch(Ogre::Degree(0));
+    }
     auto barrelRotation = angles;
 
     Ogre::Quaternion rotation = Ogre::Quaternion::Slerp(5.0f * deltaTime, mTurret->getOrientation(), turretRotation);
@@ -91,7 +100,11 @@ void Barrel::Update(const float& deltaTime)
         transform.setIdentity();
         transform.setOrigin(Convert(node->getPosition()));
 
-        auto rbody = mPhysics->CreateRigidBody(mShellMass, transform, shape, node);
+        auto rbody = mPhysics->CreateRigidBody(mShellMass, transform, shape, node,
+                                               COL_PROJECTILE,
+                                               COL_TANK |
+                                               COL_ENVIRONMENT_OBJECT |
+                                               COL_GROUND);
         auto shell = new Shell(rbody, mWorld, mPhysics, mBlastForce, mBlastRadius);
         shell->SetLinearVelocity(Convert(mProjectileVelocity));
         shell->SetGravity(btVector3(0, -mProjectileGravity, 0));
