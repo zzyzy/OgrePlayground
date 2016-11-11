@@ -46,6 +46,9 @@
     <Filter Include="Source Files\Tank">
       <UniqueIdentifier>{182c04e5-5858-4f2a-a097-21cd2a254faa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Tank\States">
+      <UniqueIdentifier>{d6999e49-4b49-4791-8e6b-3dee0ca03159}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -122,6 +125,12 @@
     </ClInclude>
     <ClInclude Include="IDamageableObject.hpp">
       <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ITankState.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="TankMind.hpp">
+      <Filter>Header Files\Tank</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

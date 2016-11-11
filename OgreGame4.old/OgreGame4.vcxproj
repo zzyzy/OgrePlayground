@@ -91,6 +91,7 @@
     <ClInclude Include="IDamageableObject.hpp" />
     <ClInclude Include="IPhysicsObject.hpp" />
     <ClInclude Include="IPoolObject.hpp" />
+    <ClInclude Include="ITankState.hpp" />
     <ClInclude Include="Math.hpp" />
     <ClInclude Include="OgreEuler.hpp" />
     <ClInclude Include="PhysicsContext.hpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="RTSController.hpp" />
     <ClInclude Include="Shell.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TankMind.hpp" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utilities.hpp" />
   </ItemGroup>

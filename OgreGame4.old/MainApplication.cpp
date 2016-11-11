@@ -110,7 +110,7 @@ bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonI
     {
     case OIS::MB_Right:
         {
-            //if (!mObjectSelector.HasSelection()) break;
+            if (!mObjectSelector.HasSelection()) break;
 
             Ogre::Ray mouseRay = mGraphicsContext.GetMouseCursorRay();
 
@@ -128,7 +128,7 @@ bool MainApplication::mouseReleased(const OIS::MouseEvent& me, OIS::MouseButtonI
             std::cout << location << std::endl;
 
             mBarrel->FireAt(location);
-            break;
+            //break;
 
             if (itr->movable->getQueryFlags() == ROBOT_MASK)
             {
@@ -376,6 +376,65 @@ void MainApplication::SetupScene(Ogre::SceneManager* const sceneMgr, Ogre::Camer
     //	node->SetRigidBody(rigidBody);
     //	mMovableObjects.push_back(node);
     //}
+
+    {
+    	auto scale = Ogre::Vector3(0.2f, 0.2f, 0.2f);
+    	auto position = mWorld.getPosition(mWorld.getNode(Ogre::Vector3(0, 0, 0)));
+
+    	auto entity = sceneMgr->createEntity("robot.mesh");
+    	entity->setCastShadows(true);
+    	entity->setQueryFlags(ROBOT_MASK);
+
+    	position.y = 2;
+    	auto node = OGRE_NEW MovableObject(sceneMgr, 25, Ogre::ColourValue(255 / 255.0f, 82 / 255.0f, 51 / 255.0f), entity);
+    	sceneMgr->getRootSceneNode()->addChild(node);
+    	auto child = node->createChildSceneNode();
+    	child->attachObject(entity);
+    	child->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
+    	node->scale(scale);
+
+    	auto shape = new btBoxShape(btVector3(2, 2, 2));
+
+    	btTransform transform;
+    	transform.setIdentity();
+    	transform.setOrigin(Convert(position));
+
+    	auto rigidBody = mPhysicsContext.CreateRigidBody(1, transform, shape, node);
+
+    	// Create a BillboardSet to represent a health bar and set its properties
+    	auto healthBar = sceneMgr->createBillboardSet();
+    	healthBar->setCastShadows(false);
+    	healthBar->setDefaultDimensions(30, 3);
+    	healthBar->setMaterialName("myMaterial/HealthBar");
+
+    	// Create a billboard for the health bar BillboardSet
+    	auto healthBarBB = healthBar->createBillboard(Ogre::Vector3(0, 100, 0));
+    	// Calculate the health bar adjustments
+    	float healthBarAdjuster = (1.0f - 1.0f) / 2; // This must range from 0.0 to 0.5
+    	// Set the health bar to the appropriate level
+    	healthBarBB->setTexcoordRect(0.0f + healthBarAdjuster, 0.0f, 0.5f + healthBarAdjuster, 1.0f);
+
+    	// Set it to always draw on top of other objects
+    	healthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
+
+    	// Create a BillboardSet for a selection circle and set its properties
+    	auto selectionCircle = sceneMgr->createBillboardSet();
+    	selectionCircle->setCastShadows(false);
+    	selectionCircle->setDefaultDimensions(60, 60);
+    	selectionCircle->setMaterialName("myMaterial/SelectionCircle");
+    	selectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
+    	selectionCircle->setCommonDirection(Ogre::Vector3(0, 1, 0));
+    	selectionCircle->setCommonUpVector(Ogre::Vector3(0, 0, -1));
+
+    	// Create a billboard for the selection circle BillboardSet
+    	auto selectionCircleBB = selectionCircle->createBillboard(Ogre::Vector3(0, 1, 0));
+    	selectionCircleBB->setTexcoordRect(0, 0, 1, 1);
+
+    	node->AttachDecal(healthBar);
+    	node->AttachDecal(selectionCircle);
+    	node->SetRigidBody(rigidBody);
+    	mMovableObjects.push_back(node);
+    }
 
     // Place objects in scene
     {

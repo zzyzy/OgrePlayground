@@ -6,7 +6,7 @@
 #include "OgreRoot.h"
 #include "connection.h"
 
-#define GRID_DIMENSION 15	// 10 x 10 grid
+#define GRID_DIMENSION 35	// 10 x 10 grid
 #define TOTAL_NODES GRID_DIMENSION*GRID_DIMENSION
 #define SQUARE_SIZE 10
 
